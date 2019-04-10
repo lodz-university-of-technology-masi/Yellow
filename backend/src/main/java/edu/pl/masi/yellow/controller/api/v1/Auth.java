@@ -13,11 +13,40 @@ import org.springframework.web.bind.annotation.RestController;
 public class Auth {
     UserManager userManager;
 
+    /*
+     *  Performs login and returns token
+     *  Input JSON:
+     *  {
+     *    "username": "Jan Kowalski",
+     *    "password": "Secret password"
+     *  }
+     *
+     *  Output:
+     *  {
+     *    "token": "login token for authorization",
+     *    "valid": true/false
+     *  }
+     *
+     *  valid field informs if logged successfully
+     */
     @RequestMapping("/api/v1/login")
     public LoginToken loginController(@RequestBody LoginRequest loginRequest) {
         return userManager.loginUser(loginRequest);
     }
 
+    /*
+     *  Performs user registration
+     *  Input JSON:
+     *  {
+     *    "username": "Jan Kowalski",
+     *    "password": "Secret password"
+     *  }
+     *
+     *  Output:
+     *  {
+     *    "status": "Textual status of registration process"
+     *  }
+     */
     @RequestMapping("/api/v1/register")
     public RegisterResponse registerController(@RequestBody LoginRequest request) {
         return userManager.registerUser(request);
