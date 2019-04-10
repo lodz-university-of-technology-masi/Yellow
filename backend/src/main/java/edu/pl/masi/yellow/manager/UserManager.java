@@ -10,8 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserManager {
-    @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     public LoginToken loginUser(LoginRequest request) {
         UserEntity selectedUser = userRepository.findByUsername(
@@ -60,5 +59,10 @@ public class UserManager {
     public boolean userCanAccess(LoginToken token, String expectedRole) {
         return this.isValidUser(token) &&
             this.getUserRole(token).equals(expectedRole);
+    }
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 }

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class Auth {
-    @Autowired
     UserManager userManager;
 
     @RequestMapping("/api/v1/login")
@@ -22,5 +21,10 @@ public class Auth {
     @RequestMapping("/api/v1/register")
     public RegisterResponse registerController(@RequestBody LoginRequest request) {
         return userManager.registerUser(request);
+    }
+
+    @Autowired
+    public void setUserManager(UserManager userManager) {
+        this.userManager = userManager;
     }
 }
