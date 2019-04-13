@@ -5,10 +5,7 @@
   "directories": {
     "test": "test"
   },
-  "dependencies": {
-    "jasmine-es6": "^0.4.3",
-    "jsdom": "^14.0.0"
-  },
+  "dependencies": {},
   "scripts": {
     "test": "jasmine"
   },
@@ -16,6 +13,6 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "jasmine": "^3.4.0"
+    "jasmine-es6": "^0.4.3"
   }
 }
