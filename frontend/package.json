@@ -1,0 +1,21 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": "package.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "jasmine-es6": "^0.4.3",
+    "jsdom": "^14.0.0"
+  },
+  "scripts": {
+    "test": "jasmine"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "jasmine": "^3.4.0"
+  }
+}

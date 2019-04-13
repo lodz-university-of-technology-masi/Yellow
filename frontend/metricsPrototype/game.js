@@ -13,10 +13,11 @@ let length = 0;
 let lastX = 0;
 let lastY = 0;
 
-function calculateLength(x, y) {
+export function calculateLength(x, y) {
   length += Math.sqrt((x - lastX) * (x - lastX) + (y - lastY) * (y - lastY));
   lastX = x;
   lastY = y;
+  return length;
 }
 
 let status = false;
