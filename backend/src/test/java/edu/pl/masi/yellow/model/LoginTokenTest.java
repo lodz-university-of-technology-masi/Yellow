@@ -8,13 +8,13 @@ import static junit.framework.TestCase.*;
 
 public class LoginTokenTest {
     @Test
-    public void InvalidTokenTest() {
+    public void InvalidToken() {
         LoginToken token = new LoginToken("", "");
         assertFalse(token.isValid());
     }
 
     @Test
-    public void ValidTokenDecompositionTest() {
+    public void ValidTokenDecomposition() {
         LoginToken token = new LoginToken("exampleUserName", "testPassword");
 
         assertEquals("exampleUserName", token.getUserName());
