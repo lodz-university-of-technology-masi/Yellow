@@ -1,5 +1,8 @@
 class SignUpController {
+    static tag = "signup";
+
     constructor(apiCommunicator) {
+        this.tag = SignUpController.tag;
         this.apiCommunicator = apiCommunicator;
     }
 

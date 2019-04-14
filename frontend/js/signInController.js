@@ -1,12 +1,14 @@
 class SignInController {
+    static tag = "signin";
+
     constructor(apiCommunicator) {
+        this.tag = SignInController.tag;
         this.apiCommunicator = apiCommunicator;
 
         this.initialized = false;
     }
 
     navigatedTo() {
-
         if (this.initialized)
             return;
 

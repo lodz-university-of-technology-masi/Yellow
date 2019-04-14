@@ -14,8 +14,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>   
     <script type="text/javascript" src="js/apiCommunicator.js"></script>
-    <script type="text/javascript" src="js/signInPageController.js"></script>
-    <script type="text/javascript" src="js/signUpPageController.js"></script>
+    <script type="text/javascript" src="js/signInController.js"></script>
+    <script type="text/javascript" src="js/signUpController.js"></script>
+    <script type="text/javascript" src="js/testsController.js"></script>
     <script type="text/javascript" src="js/viewController.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
 </head>
@@ -24,7 +25,7 @@
 
     <div class="content" id="content">
 
-        <div id="signup-page">
+        <div id="nav-signup-page">
             <div class="input-form">
                 <h1>Sign Up</h1>
                 <input id="signup-email-textbox" placeholder="Email" type="email">
@@ -37,7 +38,7 @@
             </div>
         </div>
 
-        <div id="signin-page">
+        <div id="nav-signin-page">
            
             <div class="input-form">
                 <h1>Sign In</h1>
@@ -53,7 +54,7 @@
 
         </div>
 
-        <div id="tests-page">
+        <div id="nav-tests-page">
 
 
 
@@ -62,15 +63,15 @@
 
     <nav>
         <ul>
-            <a id="button-signin">
+            <a id="nav-signin-button">
                 <i class="fas fa-sign-in-alt"></i>
                 Sign in
             </a>
-            <a id="button-signup">
+            <a id="nav-signup-button">
                 <i class="fas fa-user-plus"></i>
                 Sign up
             </a>
-            <a id="button-tests">
+            <a id="nav-tests-button">
                 <i class="fas fa-vials"></i>
                 Tests
             </a>

@@ -2,70 +2,52 @@ class ViewController {
     constructor(
         contentContainer,
         signInController,
-        signUpController) {
-            
+        signUpController,
+        testsController) {
         this.contentContainer = contentContainer;
-        this.signInController = signInController;
-        this.signUpController = signUpController;
 
-        this.signUpView = document.getElementById("signup-page");
-        this.signInView = document.getElementById("signin-page");
-        this.testsView = document.getElementById("tests-page");
-
-        this.signInButton = document.getElementById("button-signin");
-        this.signUpButton = document.getElementById("button-signup");
-        this.testsButton = document.getElementById("button-tests");
-
-        this.setUpNavButtons();
+        this.pages = {};
+        this.pages[SignInController.tag] = new Page(this, signInController);
+        this.pages[SignUpController.tag] = new Page(this, signUpController);
+        this.pages[TestsController.tag] = new Page(this, testsController);
 
         while (contentContainer.firstChild) {
             contentContainer.removeChild(contentContainer.firstChild);
         }
     }
 
-    navigateSignIn() {
-        this.setView(this.signInView, this.signInButton);
-        this.signInController.navigatedTo();
-        this.currentController = this.signInController;
+    navigate(pageTag) {
+        let page = this.pages[pageTag.tag];
+
+        this.setView(page);
+        page.controller.navigatedTo();
+        this.currentPage = page;
     }
 
-    navigateSignUp() {
-        this.setView(this.signUpView, this.signUpButton);
-        this.signUpController.navigatedTo();
-        this.currentController = this.signUpController;
-    }
-
-    navigateTests() {
-        this.setView(this.testsView, this.testsButton);
-        this.slotsController.navigatedTo();
-        this.currentController = this.slotsController;
-    }
-
-    setView(view, button) {
+    setView(page) {
         if (this.currentButton)
             this.currentButton.classList.toggle("selected")
 
-        this.currentButton = button;
-        button.classList.toggle("selected");
+        this.currentButton = page.button;
+        this.currentButton.classList.toggle("selected");
 
         if (this.currentChild)
             this.contentContainer.removeChild(this.currentChild);
 
-        this.contentContainer.appendChild(view);
-        this.currentChild = view;
+        this.contentContainer.appendChild(page.view);
+        this.currentChild = page.view;
     }
+}
 
-    setUpNavButtons() {
-        this.signInButton.onclick = () => {
-            this.navigateSignIn();
-        };
+class Page {
+    constructor(viewController, pageController) {
+        this.view = document.getElementById(`nav-${pageController.tag}-page`);
+        this.button = document.getElementById(`nav-${pageController.tag}-button`);
+        this.controller = pageController;
+        this.parent = viewController;
 
-        this.signUpButton.onclick = () => {
-            this.navigateSignUp();
-        };
-
-        this.testsButton.onclick = () => {
-            this.navigateTests();
+        this.button.onclick = () => {
+            this.parent.navigate(pageController);
         };
     }
 }
