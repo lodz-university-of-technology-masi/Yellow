@@ -18,6 +18,43 @@ document.addEventListener("DOMContentLoaded", function (ev) {
     viewController.navigateSignIn();
 });
 
+/**
+ * Facade for streamlined display of generic notifications.
+ */
+class NotificationManager {
+    static showSuccess(text) {
+        new Noty({
+            theme: 'metroui',
+            type: 'success',
+            text: text,
+            timeout: 2000,
+            progressBar: true,
+            layout: 'bottomRight'
+        }).show();
+    }
+
+    static showError(text) {
+        new Noty({
+            theme: 'metroui',
+            type: 'error',
+            text: text,
+            timeout: 2000,
+            progressBar: true,
+            layout: 'bottomRight'
+        }).show();
+    }
+
+    static showWarning(text) {
+        new Noty({
+            theme: 'metroui',
+            type: 'warning',
+            text: text,
+            timeout: 2000,
+            progressBar: true,
+            layout: 'bottomRight'
+        }).show();
+    }
+}
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));

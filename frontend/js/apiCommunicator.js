@@ -1,14 +1,12 @@
 class ApiCommunicator {
 
     constructor() {
-        this.baseAddress = "https://localhost:5000/api";
+        this.baseAddress = "https://localhost:5000/api/v1";
     }
 
     async signIn(userData) {
-        return true;
-        
         let json = await this.httpPostAsync(
-            `${this.baseAddress}/signIn`, JSON.stringify({
+            `${this.baseAddress}/login`, JSON.stringify({
                 username: userData.username,
                 password: userData.password
             }));
@@ -16,12 +14,8 @@ class ApiCommunicator {
     }
 
     async signUp(userData) {
-        window.localStorage.setItem("authToken", "token");
-        return true;
-
         let json = await this.httpPostAsync(
-            `${this.baseAddress}/signUp`, JSON.stringify({
-                email: userData.email,
+            `${this.baseAddress}/register`, JSON.stringify({
                 username: userData.username,
                 password: userData.password
             }));
@@ -41,19 +35,6 @@ class ApiCommunicator {
     }
 
     httpAsync(url, method, body) {
-
-        let token = window.localStorage.getItem("authToken");
-        if (token == null) {
-            new Noty({
-                theme: 'metroui',
-                type: 'warning',
-                text: 'Access token has not been set.',
-                timeout: false,
-                layout: 'bottomRight'
-            }).show();
-            throw "No token is set"
-        }
-
         return new Promise((resolve, reject) => {
             let xmlHttp = new XMLHttpRequest();
             xmlHttp.onreadystatechange = function () {
@@ -62,36 +43,22 @@ class ApiCommunicator {
                         resolve(xmlHttp.responseText);
                     }
                     else {
-                        if (xmlHttp.status == 401) {
-                            new Noty({
-                                theme: 'metroui',
-                                type: 'warning',
-                                text: 'Failed to authorize with provided token.',
-                                timeout: 2000,
-                                progressBar: true,
-                                layout: 'bottomRight'
-                            }).show();
+                        if (xmlHttp.status == 401 || xmlHttp.status == 403) {
+                            NotificationManager.showError('Failed to authorize.');
                         }
                         else {
-                            new Noty({
-                                theme: 'metroui',
-                                type: 'error',
-                                text: 'Failed to communicate with the server.',
-                                timeout: 2000,
-                                progressBar: true,
-                                layout: 'bottomRight'
-                            }).show();
+                            NotificationManager.showError('Failed to communicate with the server.');
+                            reject();
                         }
-
-                        reject();
                     }
                 }
+                xmlHttp.con
+                xmlHttp.open(method, url, true);
+                xmlHttp.setRequestHeader("Authorization", token);
+                xmlHttp.setRequestHeader("Content-Type", "application/json");
+                xmlHttp.send(body);
             }
-            xmlHttp.con
-            xmlHttp.open(method, url, true);
-            xmlHttp.setRequestHeader("Authorization", token);
-            xmlHttp.setRequestHeader("Content-Type", "application/json");
-            xmlHttp.send(body);
-        });
-    }
+        })
+    };
 }
+

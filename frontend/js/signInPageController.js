@@ -6,7 +6,6 @@ class SignInController {
     }
 
     navigatedTo() {
-
         if (this.initialized)
             return;
 
@@ -27,20 +26,28 @@ class SignInController {
     }
 
     async signIn() {
-        if (await this.apiCommunicator.signIn({
-            username: this.usernameTextBox.value,
-            password: this.passwordTextBox.value
-        })) {
-            new Noty({
-                theme: 'metroui',
-                type: 'success',
-                text: 'Successfully signed in.',
-                timeout: 2000,
-                progressBar: true,
-                layout: 'bottomRight'
-            }).show();
+        if (this.usernameTextBox.value.length >= 6 &&
+            this.passwordTextBox.value.length >= 6) {
+            try {
+                let result = await this.apiCommunicator.signIn({
+                    username: this.usernameTextBox.value,
+                    password: this.passwordTextBox.value
+                });
 
-            viewController.navigateTests();
+                if (result.valid) {
+                    window.localStorage.setItem("auth-token", result.username);
+                    NotificationManager.showSuccess('Successfully signed in!');
+
+                    viewController.navigate(TestsController);
+                } else {
+                    NotificationManager.showError('Failed to sign in.')
+                }
+            } catch {
+                //notification displayed by ApiCommunicator class
+                //no need for customization
+            }
+        } else {
+            NotificationManager.showWarning('Make sure that both password and username are longer than 6 characters.');
         }
     }
 }

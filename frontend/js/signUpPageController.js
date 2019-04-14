@@ -9,9 +9,9 @@ class SignUpController {
 
         this.initialized = true;
 
-        this.emailTextBox = document.getElementById("signup-email-textbox");
         this.usernameTextBox = document.getElementById("signup-username-textbox");
         this.passwordTextBox = document.getElementById("signup-password-textbox");
+        this.passwordRepeatTextBox = document.getElementById("signup-password-repeat-textbox");
         this.signUpButton = document.getElementById("signup-button");
 
         this.signUpButton.onclick = () => {
@@ -20,21 +20,24 @@ class SignUpController {
     }
 
     async signUp() {
-        if (await this.apiCommunicator.signUp({
-            username: this.emailTextBox.value,
-            username: this.usernameTextBox.value,
-            password: this.passwordTextBox.value
-        })) {
-            new Noty({
-                theme: 'metroui',
-                type: 'success',
-                text: 'Successfully signed up.',
-                timeout: 2000,
-                progressBar: true,
-                layout: 'bottomRight'
-            }).show();
+        if (this.usernameTextBox.value.length >= 6 &&
+            this.passwordTextBox.value.length >= 6 &&
+            this.passwordTextBox.value == this.passwordRepeatTextBox.value) {
 
-            viewController.navigateSignIn();
+            try {
+                await this.apiCommunicator.signUp({
+                    username: this.usernameTextBox.value,
+                    password: this.passwordTextBox.value
+                });
+                NotificationManager.showSuccess('You have successfully signed up! Proceed to sign in.')
+
+                viewController.navigate(SignInController);
+            } catch {
+                //notification displayed by ApiCommunicator class
+                //no need for customization
+            }
+        } else {
+            NotificationManager.showWarning('Make sure that both password and username are longer than 6 characters and passwords match.');
         }
     }
 }
