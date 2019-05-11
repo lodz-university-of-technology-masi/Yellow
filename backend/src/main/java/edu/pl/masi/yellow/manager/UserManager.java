@@ -51,7 +51,6 @@ public class UserManager {
     public GenericResponse setUserType(int userId, String userRole) {
         UserEntity user = userRepository.findById(userId);
         GenericResponse response;
-
         if (user == null) {
             response = new GenericResponse("Cannot find user with id " + userId);
         } else if (user.getRole().equals("moderator")) {
@@ -63,7 +62,6 @@ public class UserManager {
             userRepository.save(user);
             response = new GenericResponse("Changed user role to " + userRole);
         }
-
         return response;
     }
 
