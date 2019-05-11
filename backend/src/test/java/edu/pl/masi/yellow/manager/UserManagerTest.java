@@ -11,6 +11,8 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 import static junit.framework.TestCase.*;
 
@@ -85,5 +87,36 @@ public class UserManagerTest {
         LoginToken token = new LoginToken("Kowalski:password");
         assertTrue(userManager.userCanAccess(token, "administrator"));
         assertFalse(userManager.userCanAccess(token, "client"));
+    }
+
+    @Test
+    public void CanAquireListOfAllUsers() {
+        List<UserEntity> userList = userManager.getAllUsers();
+        verify(mockedRepository).findAll();
+        assertTrue(userList.isEmpty());
+    }
+
+    @Test
+    public void CanChangeFromUserToRedactor() {
+        UserEntity user = new UserEntity("Kowalski", "password");
+        user.setRole("user");
+
+        when(mockedRepository.findById(3)).thenReturn(
+                user);
+
+        userManager.setUserType(3, "redactor");
+        assertEquals("redactor", user.getRole());
+    }
+
+    @Test
+    public void CanChangeFromRedactorToUser() {
+        UserEntity user = new UserEntity("Kowalski", "password");
+        user.setRole("redactor");
+
+        when(mockedRepository.findById(3)).thenReturn(
+                user);
+
+        userManager.setUserType(3, "user");
+        assertEquals("user", user.getRole());
     }
 }
