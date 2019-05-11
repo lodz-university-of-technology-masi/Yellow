@@ -3,7 +3,7 @@ package edu.pl.masi.yellow.manager;
 import edu.pl.masi.yellow.entity.UserEntity;
 import edu.pl.masi.yellow.model.LoginToken;
 import edu.pl.masi.yellow.model.request.LoginRequest;
-import edu.pl.masi.yellow.model.response.RegisterResponse;
+import edu.pl.masi.yellow.model.response.GenericResponse;
 import edu.pl.masi.yellow.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class UserManagerTest {
     @Test
     public void CanCreateNewUserFromRequest() {
         when(mockedRepository.findByUsername("Kowalski")).thenReturn(null);
-        RegisterResponse response = userManager.registerUser(
+        GenericResponse response = userManager.registerUser(
                 new LoginRequest("Kowalski", "password"));
         verify(mockedRepository).save(ArgumentMatchers.any());
         assertEquals("User with name Kowalski created", response.getStatus());
@@ -69,7 +69,7 @@ public class UserManagerTest {
         when(mockedRepository.findByUsername("Kowalski")).thenReturn(
                 new UserEntity("Kowalski", "password"));
 
-        RegisterResponse response = userManager.registerUser(
+        GenericResponse response = userManager.registerUser(
                 new LoginRequest("Kowalski", "password"));
         verify(mockedRepository, never()).save(ArgumentMatchers.any());
         assertEquals("User with name Kowalski already exists", response.getStatus());

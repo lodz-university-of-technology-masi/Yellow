@@ -3,10 +3,12 @@ package edu.pl.masi.yellow.manager;
 import edu.pl.masi.yellow.entity.UserEntity;
 import edu.pl.masi.yellow.model.LoginToken;
 import edu.pl.masi.yellow.model.request.LoginRequest;
-import edu.pl.masi.yellow.model.response.RegisterResponse;
+import edu.pl.masi.yellow.model.response.GenericResponse;
 import edu.pl.masi.yellow.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserManager {
@@ -25,20 +27,43 @@ public class UserManager {
         return response;
     }
 
-    public RegisterResponse registerUser(LoginRequest request) {
+    public GenericResponse registerUser(LoginRequest request) {
         UserEntity selectedUser = userRepository.findByUsername(
                 request.getUsername());
-        RegisterResponse response;
+        GenericResponse response;
         if (selectedUser != null) {
-            response = new RegisterResponse("User with name "
+            response = new GenericResponse("User with name "
                     + request.getUsername() + " already exists");
         } else {
             selectedUser = new UserEntity(request.getUsername(),
                     request.getPassword());
             userRepository.save(selectedUser);
-            response = new RegisterResponse("User with name "
+            response = new GenericResponse("User with name "
                     + request.getUsername() + " created");
         }
+        return response;
+    }
+
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public GenericResponse setUserType(int userId, String userRole) {
+        UserEntity user = userRepository.findById(userId);
+        GenericResponse response;
+
+        if (user == null) {
+            response = new GenericResponse("Cannot find user with id " + userId);
+        } else if (user.getRole().equals("moderator")) {
+            response = new GenericResponse("Cannot change moderator role");
+        } else if (user.getRole().equals(userRole)) {
+            response = new GenericResponse("User already a " + userRole);
+        } else {
+            user.setRole(userRole);
+            userRepository.save(user);
+            response = new GenericResponse("Changed user role to " + userRole);
+        }
+
         return response;
     }
 

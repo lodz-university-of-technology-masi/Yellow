@@ -1,5 +1,8 @@
 package edu.pl.masi.yellow.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,15 +10,19 @@ import javax.persistence.*;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("user_id")
     private int id;
 
     @Column(name="user_name")
+    @JsonProperty("user_name")
     private String username;
 
     @Column(name="user_pass")
+    @JsonIgnore
     private String password;
 
     @Column(name="user_role")
+    @JsonProperty("user_role")
     private String role;
 
     public UserEntity(String username, String password) {

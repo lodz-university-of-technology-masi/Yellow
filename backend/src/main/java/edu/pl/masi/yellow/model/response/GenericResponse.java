@@ -1,9 +1,9 @@
 package edu.pl.masi.yellow.model.response;
 
-public class RegisterResponse {
+public class GenericResponse {
     private String status;
 
-    public RegisterResponse(String status) {
+    public GenericResponse(String status) {
         this.status = status;
     }
 
