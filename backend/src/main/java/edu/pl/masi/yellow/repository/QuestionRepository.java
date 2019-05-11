@@ -11,6 +11,6 @@ import javax.transaction.Transactional;
 @Repository
 @Transactional
 public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> {
-    @Query("SELECT q FROM QuestionEntity q WHERE u.id = :testId")
+    @Query("SELECT q FROM QuestionEntity q WHERE q.id = :testId")
     QuestionEntity findByTest(@Param("testId") Long testId);
 }

@@ -11,7 +11,7 @@ public class TestEntity {
     @Column(name="test_name")
     private String testname;
 
-    @Column(name="test_owner")
+    @ManyToOne
     private UserEntity owner;
 
     public TestEntity(String testname, UserEntity owner) {
