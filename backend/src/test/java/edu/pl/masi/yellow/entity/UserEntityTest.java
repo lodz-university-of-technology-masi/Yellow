@@ -8,7 +8,7 @@ public class UserEntityTest {
     @Test
     public void CheckDefaultUserRole() {
         UserEntity entity = new UserEntity("Jan", "qwert1");
-        assertEquals("user", entity.getRole());
+        assertEquals(UserEntity.UserRole.USER, entity.getRole());
     }
 
     @Test

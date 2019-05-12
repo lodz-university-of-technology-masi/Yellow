@@ -3,13 +3,15 @@ package edu.pl.masi.yellow.manager;
 import edu.pl.masi.yellow.entity.UserEntity;
 import edu.pl.masi.yellow.model.LoginToken;
 import edu.pl.masi.yellow.model.request.LoginRequest;
-import edu.pl.masi.yellow.model.response.RegisterResponse;
+import edu.pl.masi.yellow.model.response.GenericResponse;
 import edu.pl.masi.yellow.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static junit.framework.TestCase.*;
@@ -58,7 +60,7 @@ public class UserManagerTest {
     @Test
     public void CanCreateNewUserFromRequest() {
         when(mockedRepository.findByUsername("Kowalski")).thenReturn(null);
-        RegisterResponse response = userManager.registerUser(
+        GenericResponse response = userManager.registerUser(
                 new LoginRequest("Kowalski", "password"));
         verify(mockedRepository).save(ArgumentMatchers.any());
         assertEquals("User with name Kowalski created", response.getStatus());
@@ -69,7 +71,7 @@ public class UserManagerTest {
         when(mockedRepository.findByUsername("Kowalski")).thenReturn(
                 new UserEntity("Kowalski", "password"));
 
-        RegisterResponse response = userManager.registerUser(
+        GenericResponse response = userManager.registerUser(
                 new LoginRequest("Kowalski", "password"));
         verify(mockedRepository, never()).save(ArgumentMatchers.any());
         assertEquals("User with name Kowalski already exists", response.getStatus());
@@ -78,12 +80,43 @@ public class UserManagerTest {
     @Test
     public void UserCanAccessSiteWhenRoleOK() {
         UserEntity user = new UserEntity("Kowalski", "password");
-        user.setRole("administrator");
+        user.setRole(UserEntity.UserRole.MODERATOR);
 
         when(mockedRepository.findByUsername("Kowalski")).thenReturn(
                 user);
         LoginToken token = new LoginToken("Kowalski:password");
-        assertTrue(userManager.userCanAccess(token, "administrator"));
-        assertFalse(userManager.userCanAccess(token, "client"));
+        assertTrue(userManager.userCanAccess(token, UserEntity.UserRole.MODERATOR));
+        assertFalse(userManager.userCanAccess(token, UserEntity.UserRole.USER));
+    }
+
+    @Test
+    public void CanAquireListOfAllUsers() {
+        List<UserEntity> userList = userManager.getAllUsers();
+        verify(mockedRepository).findAll();
+        assertTrue(userList.isEmpty());
+    }
+
+    @Test
+    public void CanChangeFromUserToRedactor() {
+        UserEntity user = new UserEntity("Kowalski", "password");
+        user.setRole(UserEntity.UserRole.USER);
+
+        when(mockedRepository.findById(3)).thenReturn(
+                user);
+
+        userManager.setUserType(3, UserEntity.UserRole.REDACTOR);
+        assertEquals(UserEntity.UserRole.REDACTOR, user.getRole());
+    }
+
+    @Test
+    public void CanChangeFromRedactorToUser() {
+        UserEntity user = new UserEntity("Kowalski", "password");
+        user.setRole(UserEntity.UserRole.REDACTOR);
+
+        when(mockedRepository.findById(3)).thenReturn(
+                user);
+
+        userManager.setUserType(3, UserEntity.UserRole.USER);
+        assertEquals(UserEntity.UserRole.USER, user.getRole());
     }
 }
