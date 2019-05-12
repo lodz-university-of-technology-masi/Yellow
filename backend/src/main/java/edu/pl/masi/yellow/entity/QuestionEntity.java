@@ -5,6 +5,14 @@ import javax.persistence.*;
 @Entity
 @Table(name="question_data")
 public class QuestionEntity {
+    public enum QuestionType {
+        OPEN,
+        NUMBER,
+        SCALE,
+        CHOICE
+    }
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -19,19 +27,26 @@ public class QuestionEntity {
     private String description;
 
     @Column(name = "question_type")
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private QuestionType type;
 
     @Column(name = "question_meta")
     private String metadata;
 
+    @ManyToOne
+    private TestEntity test;
+
+
+
     public QuestionEntity(int number, String language,
-                          String description, String type,
-                          String metadata) {
+                          String description, QuestionType type,
+                          String metadata, TestEntity test) {
         this.number = number;
         this.language = language;
         this.description = description;
         this.type = type;
         this.metadata = metadata;
+        this.test = test;
     }
 
     public QuestionEntity() {
@@ -69,11 +84,11 @@ public class QuestionEntity {
         this.description = description;
     }
 
-    public String getType() {
+    public QuestionType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(QuestionType type) {
         this.type = type;
     }
 
@@ -83,5 +98,13 @@ public class QuestionEntity {
 
     public void setMetadata(String metadata) {
         this.metadata = metadata;
+    }
+
+    public TestEntity getTest() {
+        return test;
+    }
+
+    public void setTest(TestEntity test) {
+        this.test = test;
     }
 }

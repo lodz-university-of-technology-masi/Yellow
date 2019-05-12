@@ -8,10 +8,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 @Transactional
 public interface TestRepository extends JpaRepository<TestEntity, Long> {
     @Query("SELECT t from TestEntity t WHERE t.owner = :redactor")
-    TestEntity findByRedactor(@Param("redactor") UserEntity redactor);
+    List<TestEntity> findByRedactor(@Param("redactor") UserEntity redactor);
+
+    TestEntity findById(int id);
 }
