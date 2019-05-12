@@ -5,10 +5,10 @@ import edu.pl.masi.yellow.entity.UserEntity;
 import edu.pl.masi.yellow.model.response.TestDefResponse;
 import edu.pl.masi.yellow.repository.TestRepository;
 import edu.pl.masi.yellow.repository.UserRepository;
+import edu.pl.masi.yellow.utils.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +26,7 @@ public class TestManager {
         UserEntity redactorEntity = userRepository.findById(redactorId);
 
         if (redactorEntity == null)
-            return new ArrayList<>();
+            throw new ResourceNotFoundException();
 
         List<TestEntity> redactorTests = testRepository.findByRedactor(redactorEntity);
 
@@ -40,7 +40,7 @@ public class TestManager {
         TestEntity test = testRepository.findById(testId);
 
         if (test == null)
-            return null;
+            throw new ResourceNotFoundException();
 
         return new TestDefResponse(test, this.questionManager.getAllQuestionsByTest(test));
     }
