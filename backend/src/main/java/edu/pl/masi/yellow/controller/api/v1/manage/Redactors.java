@@ -18,7 +18,7 @@ public class Redactors {
     public List<UserEntity> getAllUserList(@RequestHeader(name = "Auth-Token", required = false)
                                                        LoginToken authToken) {
         if (authToken != null && userManager.userCanAccess(authToken,
-                "moderator"))
+                UserEntity.UserRole.MODERATOR))
             return userManager.getAllUsers();
         else
             throw new ForbiddenException();
@@ -28,8 +28,8 @@ public class Redactors {
     public GenericResponse changeUserRoleToRedactor(@RequestHeader(name = "Auth-Token",
             required = false) LoginToken authToken, @PathVariable("id") int id) {
         if (authToken != null && userManager.userCanAccess(authToken,
-                "moderator"))
-            return userManager.setUserType(id, "redactor");
+                UserEntity.UserRole.MODERATOR))
+            return userManager.setUserType(id, UserEntity.UserRole.REDACTOR);
         else
             throw new ForbiddenException();
     }
@@ -38,8 +38,8 @@ public class Redactors {
     public GenericResponse removeRedactorStatus(@RequestHeader(name = "Auth-Token",
             required = false) LoginToken authToken, @PathVariable("id") int id) {
         if (authToken != null && userManager.userCanAccess(authToken,
-                "moderator"))
-            return userManager.setUserType(id, "user");
+                UserEntity.UserRole.MODERATOR))
+            return userManager.setUserType(id, UserEntity.UserRole.USER);
         else
             throw new ForbiddenException();
     }

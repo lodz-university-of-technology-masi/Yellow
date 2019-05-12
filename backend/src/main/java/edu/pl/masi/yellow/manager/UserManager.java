@@ -48,12 +48,13 @@ public class UserManager {
         return userRepository.findAll();
     }
 
-    public GenericResponse setUserType(int userId, String userRole) {
+    public GenericResponse setUserType(int userId, UserEntity.UserRole userRole) {
         UserEntity user = userRepository.findById(userId);
         GenericResponse response;
+
         if (user == null) {
             response = new GenericResponse("Cannot find user with id " + userId);
-        } else if (user.getRole().equals("moderator")) {
+        } else if (user.getRole().equals(UserEntity.UserRole.MODERATOR)) {
             response = new GenericResponse("Cannot change moderator role");
         } else if (user.getRole().equals(userRole)) {
             response = new GenericResponse("User already a " + userRole);
@@ -62,6 +63,7 @@ public class UserManager {
             userRepository.save(user);
             response = new GenericResponse("Changed user role to " + userRole);
         }
+
         return response;
     }
 
@@ -69,7 +71,7 @@ public class UserManager {
         return userRepository.findByUsername(token.getUserName());
     }
 
-    private String getUserRole(LoginToken token) {
+    private UserEntity.UserRole getUserRole(LoginToken token) {
         return this.getUserEntity(token).getRole();
     }
 
@@ -79,7 +81,7 @@ public class UserManager {
                 token.getUserPassword());
     }
 
-    public boolean userCanAccess(LoginToken token, String expectedRole) {
+    public boolean userCanAccess(LoginToken token, UserEntity.UserRole expectedRole) {
         return this.isValidUser(token) &&
             this.getUserRole(token).equals(expectedRole);
     }

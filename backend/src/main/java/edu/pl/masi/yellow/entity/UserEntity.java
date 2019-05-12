@@ -8,13 +8,19 @@ import javax.persistence.*;
 @Entity
 @Table(name="user_data")
 public class UserEntity {
+    public enum UserRole {
+        USER,
+        REDACTOR,
+        MODERATOR
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty("user_id")
+    @JsonProperty("userId")
     private int id;
 
     @Column(name="user_name")
-    @JsonProperty("user_name")
+    @JsonProperty("userName")
     private String username;
 
     @Column(name="user_pass")
@@ -22,13 +28,14 @@ public class UserEntity {
     private String password;
 
     @Column(name="user_role")
-    @JsonProperty("user_role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @JsonProperty("userRole")
+    private UserRole role;
 
     public UserEntity(String username, String password) {
         this.username = username;
         this.password = password;
-        this.role = "user";
+        this.role = UserRole.USER;
     }
 
     public UserEntity() {
@@ -58,11 +65,11 @@ public class UserEntity {
         this.password = password;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 }

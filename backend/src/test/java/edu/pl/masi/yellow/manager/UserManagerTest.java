@@ -80,13 +80,13 @@ public class UserManagerTest {
     @Test
     public void UserCanAccessSiteWhenRoleOK() {
         UserEntity user = new UserEntity("Kowalski", "password");
-        user.setRole("administrator");
+        user.setRole(UserEntity.UserRole.MODERATOR);
 
         when(mockedRepository.findByUsername("Kowalski")).thenReturn(
                 user);
         LoginToken token = new LoginToken("Kowalski:password");
-        assertTrue(userManager.userCanAccess(token, "administrator"));
-        assertFalse(userManager.userCanAccess(token, "client"));
+        assertTrue(userManager.userCanAccess(token, UserEntity.UserRole.MODERATOR));
+        assertFalse(userManager.userCanAccess(token, UserEntity.UserRole.USER));
     }
 
     @Test
@@ -99,24 +99,24 @@ public class UserManagerTest {
     @Test
     public void CanChangeFromUserToRedactor() {
         UserEntity user = new UserEntity("Kowalski", "password");
-        user.setRole("user");
+        user.setRole(UserEntity.UserRole.USER);
 
         when(mockedRepository.findById(3)).thenReturn(
                 user);
 
-        userManager.setUserType(3, "redactor");
-        assertEquals("redactor", user.getRole());
+        userManager.setUserType(3, UserEntity.UserRole.REDACTOR);
+        assertEquals(UserEntity.UserRole.REDACTOR, user.getRole());
     }
 
     @Test
     public void CanChangeFromRedactorToUser() {
         UserEntity user = new UserEntity("Kowalski", "password");
-        user.setRole("redactor");
+        user.setRole(UserEntity.UserRole.REDACTOR);
 
         when(mockedRepository.findById(3)).thenReturn(
                 user);
 
-        userManager.setUserType(3, "user");
-        assertEquals("user", user.getRole());
+        userManager.setUserType(3, UserEntity.UserRole.USER);
+        assertEquals(UserEntity.UserRole.USER, user.getRole());
     }
 }

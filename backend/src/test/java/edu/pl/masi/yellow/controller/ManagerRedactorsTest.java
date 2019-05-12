@@ -1,6 +1,7 @@
 package edu.pl.masi.yellow.controller;
 
 import edu.pl.masi.yellow.controller.api.v1.manage.Redactors;
+import edu.pl.masi.yellow.entity.UserEntity;
 import edu.pl.masi.yellow.manager.UserManager;
 import edu.pl.masi.yellow.model.LoginToken;
 import edu.pl.masi.yellow.utils.exceptions.ForbiddenException;
@@ -32,12 +33,14 @@ public class ManagerRedactorsTest {
     public void CheckIfModeratorWhenHeaderExists() {
         LoginToken authToken = new LoginToken();
 
-        when(mockedManager.userCanAccess(authToken, "moderator")).thenReturn(true);
+        when(mockedManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR))
+                .thenReturn(true);
 
         managerRedactors.getAllUserList(authToken);
         managerRedactors.changeUserRoleToRedactor(authToken, 0);
         managerRedactors.removeRedactorStatus(authToken, 0);
 
-        verify(mockedManager, times(3)).userCanAccess(authToken, "moderator");
+        verify(mockedManager, times(3)).userCanAccess(authToken,
+                UserEntity.UserRole.MODERATOR);
     }
 }
