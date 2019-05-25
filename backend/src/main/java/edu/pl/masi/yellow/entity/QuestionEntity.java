@@ -1,5 +1,7 @@
 package edu.pl.masi.yellow.entity;
 
+import edu.pl.masi.yellow.model.request.QuestionAddRequest;
+
 import javax.persistence.*;
 
 @Entity
@@ -47,6 +49,15 @@ public class QuestionEntity {
         this.type = type;
         this.metadata = metadata;
         this.test = test;
+    }
+
+    public QuestionEntity(QuestionAddRequest request) {
+        this.number = request.getQuestionNumber();
+        this.language = request.getQuestionLang();
+        this.description = request.getQuestionDesc();
+        this.type = request.getType();
+        this.metadata = request.getQuestionData();
+
     }
 
     public QuestionEntity() {

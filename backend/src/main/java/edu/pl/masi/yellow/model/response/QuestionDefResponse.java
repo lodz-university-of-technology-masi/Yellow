@@ -10,7 +10,7 @@ public class QuestionDefResponse {
     @JsonProperty("questionDesc")
     private String questionDesc;
 
-    @JsonProperty("questionLine")
+    @JsonProperty("questionLang")
     private String questionLang;
 
     @JsonProperty("questionType")
