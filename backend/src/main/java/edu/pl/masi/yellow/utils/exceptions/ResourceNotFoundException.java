@@ -1,4 +1,4 @@
-package edu.pl.masi.yellow.utils.exception;
+package edu.pl.masi.yellow.utils.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

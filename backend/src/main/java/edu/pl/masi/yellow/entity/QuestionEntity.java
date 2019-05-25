@@ -118,4 +118,24 @@ public class QuestionEntity {
     public void setTest(TestEntity test) {
         this.test = test;
     }
+
+    @Override
+    public String toString() {
+        return "" + this.getNumber() + ";" + this.getTypeToString() + ";" + this.getLanguage()
+                + ";" + this.getDescription() + ";";
+    }
+
+    private String getTypeToString() {
+        switch(this.getType()) {
+            case SCALE:
+                return "S";
+            case CHOICE:
+                return "W";
+            case NUMBER:
+                return "L";
+            case OPEN:
+                return "O";
+        }
+        return "";
+    }
 }
