@@ -5,7 +5,12 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
 import edu.pl.masi.yellow.entity.QuestionEntity;
 import edu.pl.masi.yellow.entity.TestEntity;
+import edu.pl.masi.yellow.entity.UserEntity;
+import edu.pl.masi.yellow.model.response.GenericResponse;
+import edu.pl.masi.yellow.repository.QuestionRepository;
 import edu.pl.masi.yellow.repository.TestRepository;
+import edu.pl.masi.yellow.repository.UserRepository;
+import edu.pl.masi.yellow.utils.QuestionHelper;
 import edu.pl.masi.yellow.utils.QuestionToPDFWriter;
 import edu.pl.masi.yellow.utils.exceptions.ResourceNotFoundException;
 import edu.pl.masi.yellow.utils.exceptions.ForbiddenException;
@@ -23,7 +28,10 @@ import java.io.PrintWriter;
 @Service
 public class TestFormatterManager {
     private TestRepository testRepository;
+    private UserRepository userRepository;
+    private QuestionRepository questionRepository;
     private QuestionManager questionManager;
+    private TestManager testManager;
 
     public void getCSVResponse(String name, int testId, HttpServletResponse response) {
         TestEntity test = testRepository.findById(testId);
@@ -48,6 +56,25 @@ public class TestFormatterManager {
             throw new ForbiddenException();
         }
     }
+
+    public GenericResponse uploadCSV(String userName, String fileContent) {
+        UserEntity user = this.userRepository.findByUsername(userName);
+        String fileLines[] = fileContent.split("\n");
+
+        try {
+            TestEntity uploadedTest = this.testManager.createNewTest(user, "CSV Uploaded");
+
+            for (int i = 0; i < fileLines.length; ++i) {
+                QuestionEntity questionEntity = QuestionHelper.fromCSVLine(fileLines[i]);
+                questionEntity.setTest(uploadedTest);
+                this.questionRepository.save(questionEntity);
+            }
+            return new GenericResponse("Successfully uploaded test file");
+        } catch (IOException e) {
+            return new GenericResponse(e.getMessage());
+        }
+    }
+
 
 
     private void writeCSVResponse(TestEntity test, HttpServletResponse response) {
@@ -107,5 +134,20 @@ public class TestFormatterManager {
     @Autowired
     public void setQuestionManager(QuestionManager questionManager) {
         this.questionManager = questionManager;
+    }
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setTestManager(TestManager testManager) {
+        this.testManager = testManager;
+    }
+
+    @Autowired
+    public void setQuestionRepository(QuestionRepository questionRepository) {
+        this.questionRepository = questionRepository;
     }
 }

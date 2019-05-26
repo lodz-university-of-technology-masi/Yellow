@@ -79,6 +79,12 @@ public class TestManager {
         }
     }
 
+    public TestEntity createNewTest(UserEntity user, String testName) {
+        TestEntity newTest = new TestEntity(testName, user);
+        this.testRepository.save(newTest);
+        return newTest;
+    }
+
     @Autowired
     public void setTestRepository(TestRepository testRepository) {
         this.testRepository = testRepository;
