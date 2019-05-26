@@ -7,7 +7,7 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'edu.pl.masi'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '8'
 
 configurations {
 	compileOnly {
@@ -25,6 +25,7 @@ dependencies {
 
 	compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13'
 	compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.15'
+	compile group: 'com.h2database', name: 'h2'
 
 
 	compileOnly 'org.projectlombok:lombok'
