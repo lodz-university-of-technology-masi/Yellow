@@ -1,0 +1,48 @@
+﻿@page "/register"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+
+@inject IToastService _toastService
+@inject IUriHelper _uriHelper
+
+<h1>Register</h1>
+
+<EditForm Model="@_authModel" OnSubmit="@Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>Username:</p>
+    <InputText id="username" bind-Value="@_authModel.Username" />
+    <p>Password:</p>
+    <InputText id="password" bind-Value="@_authModel.Password" />
+    <p>Repeat password:</p>
+    <InputText id="password" bind-Value="@_authModel.PasswordRepeat" />
+    <br />
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+@functions {
+
+    [Inject]
+    public AuthorizationManager AuthorizationManager { get; set; }
+
+    private RegisterModel _authModel = new RegisterModel();
+
+    int currentCount = 0;
+
+    async void Submit()
+    {
+        if (await AuthorizationManager.Register(_authModel.Username, _authModel.Password))
+        {
+            _toastService.ShowSuccess("Success.");
+            _uriHelper.NavigateTo("/login");
+        }
+        else
+        {
+            _toastService.ShowError("Error.");
+        }
+    }
+}

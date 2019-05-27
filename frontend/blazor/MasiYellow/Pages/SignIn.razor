@@ -1,0 +1,44 @@
+﻿@page "/login"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+
+@inject IToastService _toastService
+@inject IUriHelper _uriHelper
+
+<h1>Sign In</h1>
+
+<EditForm Model="@_authModel" OnSubmit="@Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>Username:</p>
+    <InputText id="username" bind-Value="@_authModel.Username" />
+    <p>Password:</p>
+    <InputText id="password" bind-Value="@_authModel.Password" />
+    <br />
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+@functions {
+
+    [Inject]
+    public AuthorizationManager AuthorizationManager { get; set; }
+
+    private LoginModel _authModel = new LoginModel();
+
+    async void Submit()
+    {
+        if (await AuthorizationManager.SignIn(_authModel.Username, _authModel.Password))
+        {
+            _toastService.ShowSuccess("Success.");
+            _uriHelper.NavigateTo("");
+        }
+        else
+        {
+            _toastService.ShowError("Error.");
+        }
+    }
+}
