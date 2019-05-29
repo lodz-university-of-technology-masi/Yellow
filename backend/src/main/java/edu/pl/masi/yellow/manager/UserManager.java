@@ -21,7 +21,8 @@ public class UserManager {
         if (selectedUser != null &&
             selectedUser.getPassword().equals(request.getPassword())) {
             response = new LoginToken(request.getUsername(),
-                    request.getPassword());
+                    request.getPassword(),
+                    selectedUser.getRole());
         }
 
         return response;
