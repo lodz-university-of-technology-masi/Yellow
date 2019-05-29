@@ -1,15 +1,15 @@
 package edu.pl.masi.yellow.controller.api.v1.manage;
 
 import edu.pl.masi.yellow.entity.PositionEntity;
+import edu.pl.masi.yellow.entity.UserEntity;
 import edu.pl.masi.yellow.manager.PositionManager;
 import edu.pl.masi.yellow.manager.UserManager;
 import edu.pl.masi.yellow.model.LoginToken;
 
+import edu.pl.masi.yellow.model.response.GenericResponse;
+import edu.pl.masi.yellow.utils.exceptions.ForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,6 +21,46 @@ public class Positions {
     @RequestMapping(value = "/api/v1/manage/positions", method = RequestMethod.GET)
     public List<PositionEntity> getAllPositions() {
         return this.positionManager.getAllPositions();
+    }
+
+    @RequestMapping(value = "/api/v1/manage/positions/{id}", method = RequestMethod.DELETE)
+    public GenericResponse deletePosition(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
+                                          @PathVariable("id") int positionId) {
+        if (authToken != null && userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR)) {
+            return this.positionManager.deletePositionById(positionId);
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
+    @RequestMapping(value = "/api/v1/manage/positions/{id}/activate", method = RequestMethod.PUT)
+    public GenericResponse activatePosition(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
+                                            @PathVariable("id") int positionId) {
+        if (authToken != null && userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR)) {
+            return this.positionManager.activatePositionById(positionId);
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
+    @RequestMapping(value = "/api/v1/manage/positions/{id}/deactivate", method = RequestMethod.PUT)
+    public GenericResponse deactivatePosition(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
+                                              @PathVariable("id") int positionId) {
+        if (authToken != null && userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR)) {
+            return this.positionManager.deactivatePositionById(positionId);
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
+    @RequestMapping(value = "/api/v1/manage/positions/create", method = RequestMethod.GET)
+    public GenericResponse createPosition(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
+                                          @RequestParam("name") String name) {
+        if (authToken != null && userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR)) {
+            return this.positionManager.createNewPosition(name);
+        } else {
+            throw new ForbiddenException();
+        }
     }
 
     @Autowired
