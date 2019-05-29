@@ -29,6 +29,7 @@ namespace MasiYellow.Infrastructure
         }
 
         public string Token { get; set; }
+        public UserRole CurrentUserRole { get; set; } = UserRole.Moderator;
 
         private HttpClient _httpClient = new HttpClient
         {

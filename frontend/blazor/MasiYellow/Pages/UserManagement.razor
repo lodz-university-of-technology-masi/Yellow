@@ -1,0 +1,70 @@
+﻿@page "/userManagement"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+
+@inject IToastService _toastService
+@inject IUriHelper _uriHelper
+
+<h1>Manage Users</h1>
+
+@if (_users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in _users)
+            {
+                <tr>
+                    <td>@user.Username</td>
+                    <td>@user.Role.ToString()</td>
+                    <td>
+                        <Button onclick="@(() => OnUserEdit(user))">Edit</Button>
+                    </td>
+                    <td>
+                        <Button onclick="@(() => OnUserRemove(user))">Edit</Button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@functions {
+
+    [Inject]
+    public ApiCommunicator ApiCommunicator { get; set; }
+
+    private List<User> _users;
+
+    protected override async Task OnInitAsync()
+    {
+        _users = await ApiCommunicator.GetAllUsers();
+    }
+
+    public void OnUserEdit(User user)
+    {
+        _uriHelper.NavigateTo($"/editUser/{user.Id}");
+    }
+
+    public async void OnUserRemove(User user)
+    {
+        if (await ApiCommunicator.DeleteUser(user))
+        {
+            _users.Remove(user);
+        }
+    }
+}

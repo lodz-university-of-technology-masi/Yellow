@@ -1,0 +1,68 @@
+﻿@page "/postionManagement"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+
+@inject IToastService _toastService
+@inject IUriHelper _uriHelper
+
+<h1>Manage Positions</h1>
+
+@if (_positions == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Position Name</th>
+                <th>Edit Assigned Tests</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in _positions)
+            {
+                <tr>
+                    <td>@user.Name</td>
+                    <td>
+                        <Button onclick="@(() => OnPositionEdit(user))">Edit</Button>
+                    </td>    
+                    <td>
+                        <Button onclick="@(() => OnPositionRemove(user))">Delete</Button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@functions {
+
+    [Inject]
+    public ApiCommunicator ApiCommunicator { get; set; }
+
+    private List<WorkPosition> _positions;
+
+    protected override async Task OnInitAsync()
+    {
+        _positions = await ApiCommunicator.GetAllPositions();
+    }
+
+    public void OnPositionEdit(WorkPosition position)
+    {
+        _uriHelper.NavigateTo($"/editTestsAssignemnt/{position.Id}");
+    }
+
+    public async void OnPositionRemove(WorkPosition position)
+    {
+        if (await ApiCommunicator.DeletePosition(position))
+        {
+            _positions.Remove(position);
+        }
+    }
+}

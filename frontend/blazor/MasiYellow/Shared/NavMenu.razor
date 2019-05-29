@@ -33,6 +33,24 @@
         }
         else
         {
+            @if (_authManager.CurrentUserRole == Models.UserRole.Moderator)
+            {
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="userManagement">
+                        <span class="oi oi-person" aria-hidden="true"></span> User Management
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="postionManagement">
+                        <span class="oi oi-tablet" aria-hidden="true"></span> Postion Management
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="testsManagement">
+                        <span class="oi oi-question-mark" aria-hidden="true"></span> Tests Management
+                    </NavLink>
+                </li>
+            }
             <li class="nav-item px-3">
                 <a class="nav-link" href="" onclick="@LogOut">
                     <span class="oi oi-account-logout" aria-hidden="true"></span> Logout

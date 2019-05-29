@@ -13,6 +13,7 @@ namespace MasiYellow
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<AuthorizationManager>();
+            services.AddSingleton<ApiCommunicator>();
             services.AddLogging(builder => builder.AddBrowserConsole());
             services.AddBlazoredToast(options => options.Position = ToastPosition.BottomRight);
         }

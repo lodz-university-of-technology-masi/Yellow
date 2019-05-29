@@ -1,0 +1,77 @@
+﻿@page "/editTestsAssignemnt/{Id}"
+@using Models
+@using Models.View
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+
+@inject IToastService _toastService
+@inject IUriHelper _uriHelper
+
+<h1>Assignemnts</h1>
+
+@if (_position != null)
+{
+    <p>Is Active:</p>
+    <input type="checkbox" bind="@_position.IsActive" /><br />
+    <p>Role:</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Test Name</th>
+                <th>Is Assigned</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var assignment in _assignemnts)
+            {
+                <tr>
+                    <td>@assignment.TestName</td>
+                    <td>    <input type="checkbox" bind="@assignment.IsAssigned" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <button type="submit" onclick="@Submit">Save</button>
+}
+
+@functions {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Inject]
+    public ApiCommunicator ApiCommunicator { get; set; }
+
+    private WorkPosition _position;
+    private List<Test> _tests;
+    private List<TestPositionPair> _assignemnts;
+
+    protected override async Task OnInitAsync()
+    {
+        _position = await ApiCommunicator.GetPosition(int.Parse(Id));
+        _tests = await ApiCommunicator.GetAllTests();
+
+        _assignemnts = _tests.Select(test => new TestPositionPair
+        {
+            PositionId = _position.Id,
+            TestId = test.Id,
+            TestName = test.Name,
+            IsAssigned = _position.ApplicableTests.Contains(test.Id)
+        }).ToList();
+    }
+
+    async void Submit()
+    {
+        //if (await ApiCommunicator.UpdateUser(_user))
+        //{
+        //    _toastService.ShowSuccess("Success.");
+        //    _uriHelper.NavigateTo("/userManagement");
+        //}
+        //else
+        //{
+        //    _toastService.ShowError("Error.");
+        //}
+    }
+}

@@ -1,0 +1,58 @@
+﻿@page "/editUser/{Id}"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+
+@inject IToastService _toastService
+@inject IUriHelper _uriHelper
+
+<h1>Edit User</h1>
+
+@if(_user != null)
+{
+<EditForm Model="@_user" OnSubmit="@Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>Username:</p>
+    <InputText id="username" bind-Value="@_user.Username" />
+    <p>Role:</p>
+    <select id="select-box" bind="@_user.Role">
+        <option value=@UserRole.Moderator>@UserRole.Moderator.ToString()</option>
+        <option value=@UserRole.Redactor>@UserRole.Redactor.ToString()</option>
+        <option value=@UserRole.User>@UserRole.User.ToString()</option>
+    </select>
+    <br />
+    <button type="submit">Submit</button>
+</EditForm>
+}
+
+@functions {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Inject]
+    public ApiCommunicator ApiCommunicator { get; set; }
+
+    private User _user;
+
+    protected override async Task OnInitAsync()
+    {
+        _user = await ApiCommunicator.GetUser(int.Parse(Id));
+    }
+
+    async void Submit()
+    {
+        if (await ApiCommunicator.UpdateUser(_user))
+        {
+            _toastService.ShowSuccess("Success.");
+            _uriHelper.NavigateTo("/userManagement");
+        }
+        else
+        {
+            _toastService.ShowError("Error.");
+        }
+    }
+}
