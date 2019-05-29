@@ -5,6 +5,7 @@ import edu.pl.masi.yellow.model.LoginToken;
 import edu.pl.masi.yellow.model.request.LoginRequest;
 import edu.pl.masi.yellow.model.response.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
