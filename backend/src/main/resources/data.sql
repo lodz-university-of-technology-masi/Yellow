@@ -1,13 +1,13 @@
 INSERT INTO user_data (id, user_pass, user_role, user_name) VALUES
-    (1, 'password', 'testUser1', 'USER'),
-    (2, 'password', 'testUser2', 'USER'),
-    (3, 'password', 'testUser3', 'USER'),
-    (4, 'password', 'testUser4', 'REDACTOR'),
-    (5, 'password', 'testUser5', 'REDACTOR'),
-    (6, 'password', 'testUser6', 'REDACTOR'),
-    (7, 'password', 'testUser7', 'REDACTOR'),
-    (8, 'password', 'testUser8', 'MODERATOR'),
-    (9, 'password', 'testUser9', 'MODERATOR');
+    (1, 'password', 'USER', 'testUser1'),
+    (2, 'password', 'USER', 'testUser2'),
+    (3, 'password', 'USER', 'testUser3'),
+    (4, 'password', 'REDACTOR', 'testUser4'),
+    (5, 'password', 'REDACTOR', 'testUser5'),
+    (6, 'password', 'REDACTOR', 'testUser6'),
+    (7, 'password', 'REDACTOR', 'testUser7'),
+    (8, 'password', 'MODERATOR', 'testUser8'),
+    (9, 'password', 'MODERATOR', 'testUser9');
 
 
 INSERT INTO test_data (id, test_name, owner_id) VALUES
@@ -34,4 +34,3 @@ INSERT INTO question_data (id, question_desc, question_language,
     (12, 'Question 2:', 'EN', '|', 2, 'OPEN', 2),
     (13, 'Question 3:', 'EN', '|', 3, 'OPEN', 3),
     (14, 'Question 4:', 'EN', '|', 4, 'OPEN', 4);
-
