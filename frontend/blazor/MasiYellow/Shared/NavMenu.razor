@@ -1,7 +1,7 @@
 ﻿@using Infrastructure
 @using Microsoft.Extensions.Logging
-@inject AuthorizationManager _authManager
-@inject ILogger<NavMenu> _logger
+@inject AuthorizationManager AuthManager
+@inject ILogger<NavMenu> Logger
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">MasiYellow</a>
@@ -18,7 +18,7 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
-        @if (!_authManager.Authorized)
+        @if (!AuthManager.Authorized)
         {
             <li class="nav-item px-3">
                 <NavLink class="nav-link" href="login">
@@ -33,7 +33,7 @@
         }
         else
         {
-            @if (_authManager.CurrentUserRole == Models.UserRole.Moderator)
+            @if (AuthManager.CurrentUserRole == Models.UserRole.Moderator)
             {
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="userManagement">
@@ -64,10 +64,10 @@
 @functions {
     protected override void OnInit()
     {
-        _logger.LogInformation($"Initializing");
-        _authManager.AuthChanged += (_, v) =>
+        Logger.LogInformation($"Initializing");
+        AuthManager.AuthChanged += (_, v) =>
         {
-            _logger.LogInformation($"Updating to auth state {v}");
+            Logger.LogInformation($"Updating to auth state {v}");
             StateHasChanged();
         };
     }
@@ -79,6 +79,6 @@
 
     void LogOut()
     {
-        _authManager.SignOut();
+        AuthManager.SignOut();
     }
 }

@@ -4,11 +4,13 @@
 @using Infrastructure
 @using Blazored
 @using Blazored.Toast.Services
+@using Microsoft.AspNetCore.Components
 
-@inject IToastService _toastService
-@inject IUriHelper _uriHelper
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
 
-<h1>Assignemnts</h1>
+<h1>Assignments</h1>
 
 @if (_position != null)
 {
@@ -27,7 +29,9 @@
             {
                 <tr>
                     <td>@assignment.TestName</td>
-                    <td>    <input type="checkbox" bind="@assignment.IsAssigned" /></td>
+                    <td>    
+                        <input type="checkbox" bind="@assignment.IsAssigned" />
+                    </td>
                 </tr>
             }
         </tbody>
@@ -39,10 +43,7 @@
 @functions {
 
     [Parameter]
-    public string Id { get; set; }
-
-    [Inject]
-    public ApiCommunicator ApiCommunicator { get; set; }
+    private string Id { get; set; }
 
     private WorkPosition _position;
     private List<Test> _tests;
@@ -64,14 +65,15 @@
 
     async void Submit()
     {
-        //if (await ApiCommunicator.UpdateUser(_user))
-        //{
-        //    _toastService.ShowSuccess("Success.");
-        //    _uriHelper.NavigateTo("/userManagement");
-        //}
-        //else
-        //{
-        //    _toastService.ShowError("Error.");
-        //}
+    //if (await ApiCommunicator.UpdateUser(_user))
+    //{
+    //    _toastService.ShowSuccess("Success.");
+    //    _uriHelper.NavigateTo("/userManagement");
+    //}
+    //else
+    //{
+    //    _toastService.ShowError("Error.");
+    //}
     }
+
 }

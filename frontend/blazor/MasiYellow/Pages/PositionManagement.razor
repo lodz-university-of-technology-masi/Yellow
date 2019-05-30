@@ -3,9 +3,11 @@
 @using Infrastructure
 @using Blazored
 @using Blazored.Toast.Services
+@using Microsoft.AspNetCore.Components
 
-@inject IToastService _toastService
-@inject IUriHelper _uriHelper
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
 
 <h1>Manage Positions</h1>
 
@@ -30,7 +32,7 @@ else
                     <td>@user.Name</td>
                     <td>
                         <Button onclick="@(() => OnPositionEdit(user))">Edit</Button>
-                    </td>    
+                    </td>
                     <td>
                         <Button onclick="@(() => OnPositionRemove(user))">Delete</Button>
                     </td>
@@ -43,9 +45,6 @@ else
 
 @functions {
 
-    [Inject]
-    public ApiCommunicator ApiCommunicator { get; set; }
-
     private List<WorkPosition> _positions;
 
     protected override async Task OnInitAsync()
@@ -55,7 +54,7 @@ else
 
     public void OnPositionEdit(WorkPosition position)
     {
-        _uriHelper.NavigateTo($"/editTestsAssignemnt/{position.Id}");
+        UriHelper.NavigateTo($"/editTestsAssignemnt/{position.Id}");
     }
 
     public async void OnPositionRemove(WorkPosition position)

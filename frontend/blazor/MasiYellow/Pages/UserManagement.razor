@@ -3,9 +3,11 @@
 @using Infrastructure
 @using Blazored
 @using Blazored.Toast.Services
+@using Microsoft.AspNetCore.Components
 
-@inject IToastService _toastService
-@inject IUriHelper _uriHelper
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
 
 <h1>Manage Users</h1>
 
@@ -45,9 +47,6 @@ else
 
 @functions {
 
-    [Inject]
-    public ApiCommunicator ApiCommunicator { get; set; }
-
     private List<User> _users;
 
     protected override async Task OnInitAsync()
@@ -57,7 +56,7 @@ else
 
     public void OnUserEdit(User user)
     {
-        _uriHelper.NavigateTo($"/editUser/{user.Id}");
+        UriHelper.NavigateTo($"/editUser/{user.Id}");
     }
 
     public async void OnUserRemove(User user)
