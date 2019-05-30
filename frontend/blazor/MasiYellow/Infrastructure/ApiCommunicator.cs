@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MasiYellow.Models;
+using MasiYellow.Models.Enums;
 
 namespace MasiYellow.Infrastructure
 {
@@ -60,6 +61,14 @@ namespace MasiYellow.Infrastructure
             {
                 Id = 1,
                 Name = "Test1",
+                Questions = new List<Question>
+                {
+                    new Question
+                    {
+                        Description = "What is life?",
+                        QuestionType = QuestionType.Choice
+                    }
+                }
             },
             new Test
             {
@@ -108,10 +117,11 @@ namespace MasiYellow.Infrastructure
             return _positions.First(user => user.Id == id);
         }
 
-        public async Task<bool> AddPosition(WorkPosition position)
+        public async Task<WorkPosition> AddPosition(WorkPosition position)
         {
             _positions.Add(position);
-            return true;
+            position.Id = _positions.Max(workPosition => workPosition.Id) + 1;
+            return position;
         }
 
         public async Task<bool> DeletePosition(WorkPosition position)
@@ -122,6 +132,28 @@ namespace MasiYellow.Infrastructure
         public async Task<List<Test>> GetAllTests()
         {
             return _tests.ToList();
+        }
+
+        public async Task<bool> DeleteTest(Test test)
+        {
+            return true;
+        }
+
+        public async Task<Test> GetTest(int id)
+        {
+            return _tests.First(test => test.Id == id);
+        }
+
+        public async Task<bool> DeleteTestQuestion(Question question)
+        {
+            return true;
+        }
+
+        public async Task<bool> AddTest(Test test)
+        {
+            test.Id = _tests.Max(t => t.Id) + 1;
+            _tests.Add(test);
+            return true;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@page "/userManagement"
+﻿@page "/editTest/{Id}"
 @using Models
 @using Infrastructure
 @using Blazored
@@ -9,9 +9,9 @@
 @inject IUriHelper UriHelper
 @inject ApiCommunicator ApiCommunicator
 
-<h1>Manage Users</h1>
+<h1>Edit test</h1>
 
-@if (_users == null)
+@if (_test == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -20,23 +20,19 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Username</th>
-                <th>Role</th>
-                <th>Edit</th>
+                <th>Question</th>
+                <th>Type</th>
                 <th>Delete</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in _users)
+            @foreach (var question in _test.Questions)
             {
                 <tr>
-                    <td>@user.Username</td>
-                    <td>@user.Role.ToString()</td>
+                    <td>@question.Description</td>
+                    <td>@question.QuestionType.ToString()</td>
                     <td>
-                        <Button onclick="@(() => OnUserEdit(user))">Edit</Button>
-                    </td>
-                    <td>
-                        <Button onclick="@(() => OnUserRemove(user))">Delete</Button>
+                        <Button onclick="@(() => OnQuestionRemove(question))">Delete</Button>
                     </td>
                 </tr>
             }
@@ -47,11 +43,14 @@ else
 
 @functions {
 
-    private List<User> _users;
+    [Parameter]
+    private string Id { get; set; }
+
+    private Test _test;
 
     protected override async Task OnInitAsync()
     {
-        _users = await ApiCommunicator.GetAllUsers();
+        _test = await ApiCommunicator.GetTest(int.Parse(Id));
     }
 
     public void OnUserEdit(User user)
@@ -59,11 +58,11 @@ else
         UriHelper.NavigateTo($"/editUser/{user.Id}");
     }
 
-    public async void OnUserRemove(User user)
+    public async void OnQuestionRemove(Question question)
     {
-        if (await ApiCommunicator.DeleteUser(user))
+        if (await ApiCommunicator.DeleteTestQuestion(question))
         {
-            _users.Remove(user);
+            _test.Questions.Remove(question);
         }
     }
 }

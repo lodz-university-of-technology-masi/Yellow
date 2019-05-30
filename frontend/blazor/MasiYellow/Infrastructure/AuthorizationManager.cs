@@ -54,9 +54,10 @@ namespace MasiYellow.Infrastructure
                     password
                 }));
                 response.EnsureSuccessStatusCode();
-        
-                Token = Json.Deserialize<LoginResponse>(await response.Content.ReadAsStringAsync()).Token;
-                _logger.LogInformation($"Received token {Token}");
+
+                var json = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation($"Received response {json}");
+                Token = Json.Deserialize<LoginResponse>(json).Token;
                 Authorized = true;
                 return true;
             }

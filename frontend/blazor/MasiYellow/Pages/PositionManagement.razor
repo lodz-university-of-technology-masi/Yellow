@@ -3,6 +3,8 @@
 @using Infrastructure
 @using Blazored
 @using Blazored.Toast.Services
+@using MasiYellow.Models.View
+@using MasiYellow.Util
 @using Microsoft.AspNetCore.Components
 
 @inject IToastService ToastService
@@ -21,7 +23,7 @@ else
         <thead>
             <tr>
                 <th>Position Name</th>
-                <th>Edit Assigned Tests</th>
+                <th>Edit</th>
                 <th>Delete</th>
             </tr>
         </thead>
@@ -42,10 +44,25 @@ else
     </table>
 }
 
+<h1>Add Position</h1>
+
+<EditForm Model="@_newPositionModel" OnSubmit="@AddPosition">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>Name:</p>
+    <InputText id="username" bind-Value="@_newPositionModel.Name" />
+    <br />
+    <br />
+    <button type="submit">Submit</button>
+</EditForm>
+
 
 @functions {
 
     private List<WorkPosition> _positions;
+
+    private WorkPositionModel _newPositionModel = new WorkPositionModel();
 
     protected override async Task OnInitAsync()
     {
@@ -54,7 +71,7 @@ else
 
     public void OnPositionEdit(WorkPosition position)
     {
-        UriHelper.NavigateTo($"/editTestsAssignemnt/{position.Id}");
+        UriHelper.Navigate($"/editTestsAssignment/{position.Id}");
     }
 
     public async void OnPositionRemove(WorkPosition position)
@@ -63,5 +80,22 @@ else
         {
             _positions.Remove(position);
         }
+    }
+
+    public async void AddPosition()
+    {
+        var position = new WorkPosition
+        {
+            Name = _newPositionModel.Name
+        };
+
+        position = await ApiCommunicator.AddPosition(position);
+
+        if (position != null)
+        {
+            _positions.Add(position);
+            _newPositionModel = new WorkPositionModel();
+        }
+
     }
 }

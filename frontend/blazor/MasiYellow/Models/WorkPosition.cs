@@ -10,6 +10,6 @@ namespace MasiYellow.Models
         public long Id { get; set; }
         public string Name { get; set; }
         public bool IsActive { get; set; }
-        public List<long> ApplicableTests { get; set; }
+        public List<long> ApplicableTests { get; set; } = new List<long>();
     }
 }
