@@ -33,12 +33,11 @@ public class PositionManager {
         return new GenericResponse("Successfully deactivated position");
     }
 
-    public GenericResponse createNewPosition(String positionName) {
+    public PositionEntity createNewPosition(String positionName) {
         PositionEntity positionEntity = new PositionEntity();
         positionEntity.setPositionName(positionName);
 
-        this.positionRepository.save(positionEntity);
-        return new GenericResponse("Successfully created position with name " + positionName);
+        return this.positionRepository.save(positionEntity);
     }
 
     public GenericResponse deletePositionById(int positionId) {

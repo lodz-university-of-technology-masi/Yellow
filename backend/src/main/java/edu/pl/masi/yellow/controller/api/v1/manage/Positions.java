@@ -54,8 +54,8 @@ public class Positions {
     }
 
     @RequestMapping(value = "/api/v1/manage/positions/create", method = RequestMethod.GET)
-    public GenericResponse createPosition(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
-                                          @RequestParam("name") String name) {
+    public PositionEntity createPosition(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
+                                         @RequestParam("name") String name) {
         if (authToken != null && userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR)) {
             return this.positionManager.createNewPosition(name);
         } else {

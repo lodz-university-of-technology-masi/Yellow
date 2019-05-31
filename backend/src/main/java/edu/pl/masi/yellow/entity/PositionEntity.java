@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,8 +70,12 @@ public class PositionEntity {
 
     @JsonGetter("tests")
     public List<Integer> getTestId() {
-        return this.testEntities.stream()
-                .map(TestEntity::getId)
-                .collect(Collectors.toList());
+        if (this.testEntities != null) {
+            return this.testEntities.stream()
+                    .map(TestEntity::getId)
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
     }
 }
