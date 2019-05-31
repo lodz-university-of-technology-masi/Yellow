@@ -44,6 +44,28 @@ public class Redactors {
             throw new ForbiddenException();
     }
 
+    @RequestMapping(value = "/api/v1/manage/users", method = RequestMethod.POST)
+    public UserEntity updateUser(@RequestHeader(name = "Auth-Token",
+            required = false) LoginToken authToken, UserEntity userEntity) {
+        if (authToken != null && userManager.userCanAccess(authToken,
+                UserEntity.UserRole.MODERATOR)) {
+            return userManager.updateUser(userEntity);
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
+    @RequestMapping(value = "/api/v1/manage/users/{id}", method = RequestMethod.DELETE)
+    public GenericResponse deleteUser(@RequestHeader(name = "Auth-Token",
+            required = false) LoginToken authToken, @PathVariable("id") int id) {
+        if (authToken != null && userManager.userCanAccess(authToken,
+                UserEntity.UserRole.MODERATOR)) {
+            return userManager.deleteUser(Long.valueOf(id));
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
     @Autowired
     public void setUserManager(UserManager userManager) {
         this.userManager = userManager;

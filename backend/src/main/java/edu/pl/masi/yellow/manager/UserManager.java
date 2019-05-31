@@ -5,6 +5,7 @@ import edu.pl.masi.yellow.model.LoginToken;
 import edu.pl.masi.yellow.model.request.LoginRequest;
 import edu.pl.masi.yellow.model.response.GenericResponse;
 import edu.pl.masi.yellow.repository.UserRepository;
+import edu.pl.masi.yellow.utils.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +67,22 @@ public class UserManager {
         }
 
         return response;
+    }
+
+    public UserEntity updateUser(UserEntity user) {
+        UserEntity oldUser = userRepository.findById(user.getId());
+        if (oldUser == null)
+            throw new ResourceNotFoundException();
+
+        if (user.getUsername() == null)
+            user.setPassword(oldUser.getPassword());
+
+        return userRepository.save(user);
+    }
+
+    public GenericResponse deleteUser(Long id) {
+        userRepository.deleteById(id);
+        return new GenericResponse("Deleted user");
     }
 
     private UserEntity getUserEntity(LoginToken token) {
