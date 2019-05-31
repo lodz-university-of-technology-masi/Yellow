@@ -25,6 +25,13 @@ public class TestManager {
 
     }
 
+    public List<TestDefResponse> getAllTests() {
+        return testRepository.findAll().stream()
+                .map(e -> new TestDefResponse(e,
+                        this.questionManager.getAllQuestionsByTest(e)))
+                .collect(Collectors.toList());
+    }
+
     public List<TestDefResponse> getAllTestsByRedactor(int redactorId) {
         UserEntity redactorEntity = userRepository.findById(redactorId);
 
@@ -46,6 +53,22 @@ public class TestManager {
             throw new ResourceNotFoundException();
 
         return new TestDefResponse(test, this.questionManager.getAllQuestionsByTest(test));
+    }
+
+    public TestDefResponse addTest(String requesterName, String testName) {
+        UserEntity requesterUserEntity = userRepository.findByUsername(requesterName);
+
+        if (requesterUserEntity == null || !requesterUserEntity.getRole()
+                .equals(UserEntity.UserRole.REDACTOR))
+            throw new ResourceNotFoundException();
+
+        TestEntity newTest = new TestEntity();
+        newTest.setTestname(testName);
+        newTest.setOwner(requesterUserEntity);
+
+        newTest = testRepository.save(newTest);
+
+        return new TestDefResponse(newTest, questionManager.getAllQuestionsByTest(newTest));
     }
 
     public GenericResponse removeTest(String requesterName, int id) {

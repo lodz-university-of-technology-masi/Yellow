@@ -69,6 +69,9 @@ where question definition is one of following:
 }
 ```
 
+##### GET /api/v1/manage/tests
+Get all tests
+
 ##### GET /api/v1/manage/tests/id/{id}
 Get test by its id (stucture similar to previous, but only one object, not list)
 
@@ -77,6 +80,9 @@ Get all my test when logged as redactor
 
 ##### DELETE /api/v1/manage/tests/id/{id}
 Remove test with given id and all its questions
+
+##### GET /api/v1/manage/tests/add?name={testname}
+Add new empty test, returns test object
 
 ##### DELETE /api/v1/manage/tests/modify/{testId}/{questionId}
 Remove question with id from test

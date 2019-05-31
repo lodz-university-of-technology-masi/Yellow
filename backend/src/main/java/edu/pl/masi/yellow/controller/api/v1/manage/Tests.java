@@ -18,6 +18,17 @@ public class Tests {
     private TestManager testManager;
     private UserManager userManager;
 
+
+    @RequestMapping(value = "api/v1/manage/tests/", method = RequestMethod.GET)
+    public List<TestDefResponse> getAllTests(@RequestHeader(name = "Auth-Token",
+            required = false) LoginToken authToken) {
+        if (authToken != null && userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR)) {
+            return testManager.getAllTests();
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
     @RequestMapping(value = "/api/v1/manage/tests/redactor/{id}",
             method = RequestMethod.GET)
     public List<TestDefResponse> getAllTestsByRedactor(
@@ -49,6 +60,16 @@ public class Tests {
         if (authToken != null && (userManager.userCanAccess(authToken, UserEntity.UserRole.REDACTOR)
                 || userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR))) {
             return this.testManager.removeTest(authToken.getUserName(), id);
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
+    @RequestMapping(value = "/api/v1/manage/tests/add", method = RequestMethod.GET)
+    public TestDefResponse addTest(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
+                                   @RequestParam("name") String testName) {
+        if (authToken != null && (userManager.userCanAccess(authToken, UserEntity.UserRole.REDACTOR))) {
+            return this.testManager.addTest(authToken.getUserName(), testName);
         } else {
             throw new ForbiddenException();
         }
