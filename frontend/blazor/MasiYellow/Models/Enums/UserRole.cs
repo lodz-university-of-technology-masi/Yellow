@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 
 namespace MasiYellow.Models
 {
-    public class LoginResponse
-    {
-        public string Token { get; set; }
+    public enum UserRole
+    {     
+        User,
+        Redactor,
+        Moderator,
     }
 }
