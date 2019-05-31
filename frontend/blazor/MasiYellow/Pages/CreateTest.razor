@@ -1,0 +1,125 @@
+﻿@page "/createTest"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+@using MasiYellow.Models.Enums
+@using MasiYellow.Models.View
+@using MasiYellow.Util
+@using Microsoft.AspNetCore.Components
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+
+<h1>Create Test</h1>
+
+@if (_test == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>Test Name:</p>
+    <input id="username" bind="@_test.Name" />
+    <br/>
+    <br/>
+    <br/>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Type</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var question in _test.Questions)
+            {
+                <tr>
+                    <td>@question.Description</td>
+                    <td>@question.QuestionType.ToString()</td>
+                    <td>
+                        <Button onclick="@(() => OnQuestionRemove(question))">Delete</Button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h1>Add Question</h1>
+
+<EditForm Model="@_newQuestionModel" OnSubmit="@AddQuestion">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>Question:</p>
+    <InputText id="username" bind-Value="@_newQuestionModel.Question" />
+    <p>Question Type:</p>
+    <select id="select-box" bind="@_newQuestionModel.QuestionType">
+        <option value=@QuestionType.Open>@QuestionType.Open.ToString()</option>
+        <option value=@QuestionType.Choice>@QuestionType.Choice.ToString()</option>
+        <option value=@QuestionType.Number>@QuestionType.Number.ToString()</option>
+        <option value=@QuestionType.Scale>@QuestionType.Scale.ToString()</option>
+    </select>
+    @if (_newQuestionModel.QuestionType == QuestionType.Choice)
+    {
+        <p>Choices (semicolon separated):</p>
+        <InputText id="username" bind-Value="@_newQuestionModel.Choices" />
+    }
+    else if (_newQuestionModel.QuestionType == QuestionType.Scale)
+    {
+        <p>Minimum</p>
+        <InputText id="username" bind-Value="@_newQuestionModel.ScaleMin"/>
+        <p>Maximum</p>
+        <InputText id="username" bind-Value="@_newQuestionModel.ScaleMax"/>
+    }
+    <br />
+    <br />
+    <button type="submit">Submit</button>
+</EditForm>
+
+<h1>Create</h1>
+
+<Button onclick="@SubmitTest">Submit This Test</Button>
+
+@functions {
+
+    [Parameter]
+    private string Id { get; set; }
+
+    private Test _test;
+    private QuestionModel _newQuestionModel = new QuestionModel();
+
+    protected override async Task OnInitAsync()
+    {
+        _test = new Test();
+    }
+
+    public async void SubmitTest()
+    {
+        if (await ApiCommunicator.AddTest(_test))
+        {
+            UriHelper.Navigate("testsManagement");
+        }
+    }
+
+    public void AddQuestion()
+    {
+        _test.Questions.Add(new Question
+        {
+            Description = _newQuestionModel.Question,
+            QuestionType = _newQuestionModel.QuestionType
+        });
+        _newQuestionModel = new QuestionModel();
+    }
+
+    public async void OnQuestionRemove(Question question)
+    {
+        if (await ApiCommunicator.DeleteTestQuestion(question))
+        {
+            _test.Questions.Remove(question);
+        }
+    }
+}

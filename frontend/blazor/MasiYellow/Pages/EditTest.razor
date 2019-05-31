@@ -1,0 +1,68 @@
+﻿@page "/editTest/{Id}"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+@using Microsoft.AspNetCore.Components
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+
+<h1>Edit test</h1>
+
+@if (_test == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Type</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var question in _test.Questions)
+            {
+                <tr>
+                    <td>@question.Description</td>
+                    <td>@question.QuestionType.ToString()</td>
+                    <td>
+                        <Button onclick="@(() => OnQuestionRemove(question))">Delete</Button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@functions {
+
+    [Parameter]
+    private string Id { get; set; }
+
+    private Test _test;
+
+    protected override async Task OnInitAsync()
+    {
+        _test = await ApiCommunicator.GetTest(int.Parse(Id));
+    }
+
+    public void OnUserEdit(User user)
+    {
+        UriHelper.NavigateTo($"/editUser/{user.Id}");
+    }
+
+    public async void OnQuestionRemove(Question question)
+    {
+        if (await ApiCommunicator.DeleteTestQuestion(question))
+        {
+            _test.Questions.Remove(question);
+        }
+    }
+}
