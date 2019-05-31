@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Blazor.Extensions.Logging;
 using MasiYellow.Models;
 using MasiYellow.Models.Enums;
+using MasiYellow.Models.View;
 using MasiYellow.Util;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
@@ -238,10 +239,58 @@ namespace MasiYellow.Infrastructure
 
         public async Task<bool> AddTest(Test test)
         {
-            return true;
-            //test.TestId = _tests.Max(t => t.TestId) + 1;
-            //_tests.Add(test);
-            //return true;
+            try
+            {
+                var response = await _httpClient.GetAsync($"{BaseAddress}/tests/add?name={test.TestName}");
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+        public async Task<bool> AddQuestion(string testId, int number, QuestionModel questionModel)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync($"{BaseAddress}/tests/modify/{testId}", new JsonContent(new
+                {
+                    QuestionNumber = number,
+                    QuestionDesc = questionModel.Question,
+                    QuestionLang = questionModel.Language,
+                    QuestionType = questionModel.QuestionType.ToString().ToUpper(),
+                    QuestionData = GetMetadataString(questionModel)
+                }));
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+        private string GetMetadataString(QuestionModel questionModel)
+        {
+            switch (questionModel.QuestionType)
+            {
+                case QuestionType.Open:
+                    return $"|";
+                case QuestionType.Number:
+                    return $"|";
+                case QuestionType.Scale:
+                    return $"{questionModel.ScaleMin}|{questionModel.ScaleMax}";
+                case QuestionType.Choice:
+                    return questionModel.Choices;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

@@ -61,21 +61,20 @@
             PositionId = _position.PositionId,
             TestId = test.TestId,
             TestName = test.TestName,
+            Original = _position.Tests.Contains(test.TestId),
             IsAssigned = _position.Tests.Contains(test.TestId)
         }).ToList();
     }
 
     async void Submit()
     {
-    //if (await ApiCommunicator.UpdateUser(_user))
-    //{
-    //    _toastService.ShowSuccess("Success.");
-    //    _uriHelper.NavigateTo("/userManagement");
-    //}
-    //else
-    //{
-    //    _toastService.ShowError("Error.");
-    //}
+        foreach (var testPositionPair in _assignemnts.Where(pair => pair.Original != pair.IsAssigned))
+        {
+            if (testPositionPair.IsAssigned)
+            {
+
+            }
+        }
     }
 
 }

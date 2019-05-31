@@ -24,5 +24,8 @@ namespace MasiYellow.Models.View
         public string ScaleMax { get; set; }
 
         public string Choices { get; set; }
+
+        [RegularExpression(@"(EN|PL)", ErrorMessage = "Language should be either EN or PL")]
+        public string Language { get; set; }
     }
 }

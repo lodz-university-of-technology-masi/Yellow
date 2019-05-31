@@ -57,7 +57,11 @@ namespace MasiYellow.Infrastructure
 
                 var json = await response.Content.ReadAsStringAsync();
                 _logger.LogInformation($"Received response {json}");
-                Token = Json.Deserialize<LoginResponse>(json).Token;
+                var model = Json.Deserialize<LoginResponse>(json);
+                if(!model.Valid)
+                    throw new Exception();
+                Token = model.Token;
+                CurrentUserRole = model.UserRole;
                 Authorized = true;
                 return true;
             }

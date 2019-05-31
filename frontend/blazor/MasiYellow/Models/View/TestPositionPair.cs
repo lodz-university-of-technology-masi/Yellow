@@ -11,5 +11,6 @@ namespace MasiYellow.Models.View
         public long PositionId { get; set; }
         public string TestName { get; set; }
         public bool IsAssigned { get; set; }
+        public bool Original { get; set; }
     }
 }

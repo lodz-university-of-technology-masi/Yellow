@@ -21,68 +21,12 @@
 else
 {
     <p>Test Name:</p>
-    <input id="username" bind="@_test.TestName" />
+    <input bind="@_test.TestName"/>
     <br/>
     <br/>
-    <br/>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Question</th>
-                <th>Type</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var question in _test.Questions)
-            {
-                <tr>
-                    <td>@question.QuestionDesc</td>
-                    <td>@question.Type.ToString()</td>
-                    <td>
-                        <Button onclick="@(() => OnQuestionRemove(question))">Delete</Button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+    <Button onclick="@SubmitTest">Submit This Test</Button>
 }
-
-<h1>Add Question</h1>
-
-<EditForm Model="@_newQuestionModel" OnSubmit="@AddQuestion">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <p>Question:</p>
-    <InputText id="username" bind-Value="@_newQuestionModel.Question" />
-    <p>Question Type:</p>
-    <select id="select-box" bind="@_newQuestionModel.QuestionType">
-        <option value=@QuestionType.Open>@QuestionType.Open.ToString()</option>
-        <option value=@QuestionType.Choice>@QuestionType.Choice.ToString()</option>
-        <option value=@QuestionType.Number>@QuestionType.Number.ToString()</option>
-        <option value=@QuestionType.Scale>@QuestionType.Scale.ToString()</option>
-    </select>
-    @if (_newQuestionModel.QuestionType == QuestionType.Choice)
-    {
-        <p>Choices (semicolon separated):</p>
-        <InputText id="username" bind-Value="@_newQuestionModel.Choices" />
-    }
-    else if (_newQuestionModel.QuestionType == QuestionType.Scale)
-    {
-        <p>Minimum</p>
-        <InputText id="username" bind-Value="@_newQuestionModel.ScaleMin"/>
-        <p>Maximum</p>
-        <InputText id="username" bind-Value="@_newQuestionModel.ScaleMax"/>
-    }
-    <br />
-    <br />
-    <button type="submit">Submit</button>
-</EditForm>
-
-<h1>Create</h1>
-
-<Button onclick="@SubmitTest">Submit This Test</Button>
 
 @functions {
 
@@ -105,15 +49,6 @@ else
         }
     }
 
-    public void AddQuestion()
-    {
-        _test.Questions.Add(new Question
-        {
-            QuestionDesc = _newQuestionModel.Question,
-            Type = _newQuestionModel.QuestionType
-        });
-        _newQuestionModel = new QuestionModel();
-    }
 
     public async void OnQuestionRemove(Question question)
     {

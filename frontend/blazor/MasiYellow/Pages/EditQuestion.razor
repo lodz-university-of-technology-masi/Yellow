@@ -1,0 +1,86 @@
+﻿@*@page "/editQuestion/{TestId}/{QuestionId}"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+@using MasiYellow.Models.Enums
+@using MasiYellow.Models.View
+@using Microsoft.AspNetCore.Components
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+
+<h1>Edit User</h1>
+
+@if (_user != null)
+{
+    <EditForm Model="@_questionModel" OnSubmit="@UpdateQuestion">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <p>Question:</p>
+        <InputText id="username" bind-Value="@_questionModel.Question" />
+        <p>Question Type:</p>
+        <select id="select-box" bind="@_questionModel.QuestionType">
+            <option value=@QuestionType.Open>@QuestionType.Open.ToString()</option>
+            <option value=@QuestionType.Choice>@QuestionType.Choice.ToString()</option>
+            <option value=@QuestionType.Number>@QuestionType.Number.ToString()</option>
+            <option value=@QuestionType.Scale>@QuestionType.Scale.ToString()</option>
+        </select>
+        @if (_newQuestionModel.QuestionType == QuestionType.Choice)
+        {
+            <p>Choices (pipe "|" separated):</p>
+            <InputText id="username" bind-Value="@_newQuestionModel.Choices" />
+        }
+        else if (_newQuestionModel.QuestionType == QuestionType.Scale)
+        {
+            <p>Minimum</p>
+            <InputText id="username" bind-Value="@_newQuestionModel.ScaleMin"/>
+            <p>Maximum</p>
+            <InputText id="username" bind-Value="@_newQuestionModel.ScaleMax"/>
+        }
+        <br />
+        <br />
+        <button type="submit">Submit</button>
+    </EditForm>
+}
+
+@functions {
+
+    [Parameter]
+    private string TestId { get; set; }
+
+    [Parameter]
+    private string QuestionId { get; set; }
+
+    private QuestionModel _questionModel;
+
+    protected override async Task OnInitAsync()
+    {
+        var question = (await ApiCommunicator.GetTest(int.Parse(TestId))).Questions.First(q => q.QuestionId == int.Parse(QuestionId));
+
+
+        _questionModel = new QuestionModel
+        {
+            Question = question.QuestionDesc,
+            QuestionType = question.Type,
+            Choices = string.Join("|", question.Choices),
+            ScaleMin = question.MaxVal.ToString(),
+            ScaleMax = question.MinVal.ToString()
+        };
+    }
+
+    async void Submit()
+    {
+        if (await ApiCommunicator.UpdateQuestion(TestId, QuestionId, _questionModel))
+        {
+            ToastService.ShowSuccess("Success.");
+            UriHelper.NavigateTo("/userManagement");
+        }
+        else
+        {
+            ToastService.ShowError("Error.");
+        }
+    }
+}*@

@@ -14,6 +14,10 @@ namespace MasiYellow.Models
         public string QuestionDesc { get; set; }
         public QuestionType Type { get; set; }
 
+        public string[] Choices { get; set; }
+        public int MinVal { get; set; }
+        public int MaxVal { get; set; }
+
         private string QuestionType
         {
             get { return Type.ToString().ToUpper(); }

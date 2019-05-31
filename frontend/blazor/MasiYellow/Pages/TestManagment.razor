@@ -44,7 +44,7 @@ else
     </table>
 }
 
-@if (AuthorizationManager.CurrentUserRole == UserRole.Redactor || true)
+@if (AuthorizationManager.CurrentUserRole == UserRole.Redactor)
 {
     <Button onclick="@(() => UriHelper.Navigate("createTest"))">Create New Test</Button>
 }
