@@ -27,6 +27,79 @@ Update user with structure like in get user endpoint (add field password set to 
 ##### DELETE /api/v1/manage/users/{id}
 Remove user with given id
 
+
+#### Test managment endpoints
+
+##### GET /api/v1/manage/tests/redactor/{id}
+Get all test for redactor
+
+```json
+[
+  {
+    "testId": 0,
+    "testName": "name",
+    "testOwner": {
+      // user data for owner
+    },
+    
+    "questions": [
+      // question definitions
+    ]
+  }
+]
+
+```
+
+where question definition is one of following:
+
+```json
+{
+  "questionId": 0,
+  "questionNumber": 0,
+  "questionDesc": "This is your question",
+  "questionLang": "PL or EN",
+  "questionType": "OPEN|SCALE|NUMBER|CHOICE",
+  
+  // if question is scale:
+  "minVal": 0,
+  "maxVal": 10,
+  
+  // if question is choice:
+  "choices": ["First", "Second", "etc"]
+}
+```
+
+##### GET /api/v1/manage/tests/id/{id}
+Get test by its id (stucture similar to previous, but only one object, not list)
+
+##### GET /api/v1/manage/tests/me
+Get all my test when logged as redactor
+
+##### DELETE /api/v1/manage/tests/id/{id}
+Remove test with given id and all its questions
+
+##### DELETE /api/v1/manage/tests/modify/{testId}/{questionId}
+Remove question with id from test
+
+##### POST /api/v1/manage/tests/modify/{testId}
+Add question to test
+
+```json
+{
+  "questionNumber": 0,
+  "questionDesc": "this is your question?",
+  "questionLang": "PL or EN",
+  "questionType": "OPEN|SCALE|NUMBER|CHOICE",
+  "questionData": "metadata string described below"
+}
+```
+
+Metadata string is:
+
+- If question is open/number:            "|"
+- If question is scale:  "minVal|maxVal" e.g. "0|10"
+- If question is choice: "first|second|third|last"
+
 #### Position managment endpoints
 
 ##### GET /api/v1/manage/positions

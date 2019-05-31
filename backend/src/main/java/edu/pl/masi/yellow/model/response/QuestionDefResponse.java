@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.pl.masi.yellow.entity.QuestionEntity;
 
 public class QuestionDefResponse {
+    @JsonProperty("questionId")
+    private int questionId;
+
     @JsonProperty("questionNumber")
     private int questionNumber;
 
@@ -22,5 +25,6 @@ public class QuestionDefResponse {
         this.questionDesc = entity.getDescription();
         this.questionLang = entity.getLanguage();
         this.type = entity.getType();
+        this.questionId = entity.getId();
     }
 }

@@ -25,7 +25,7 @@ public class Tests {
         return testManager.getAllTestsByRedactor(redactorId);
     }
 
-    @RequestMapping(value = "/api/v1/manage/tests/id/{id}")
+    @RequestMapping(value = "/api/v1/manage/tests/id/{id}", method = RequestMethod.GET)
     public TestDefResponse getTestById(@PathVariable("id") int testId) {
         return testManager.getTestById(testId);
     }
@@ -38,6 +38,17 @@ public class Tests {
             return testManager.getAllTestsByRedactor(userManager.getAllUsers().stream()
                     .filter(u -> u.getUsername().equals(authToken.getUserName()))
                     .map(UserEntity::getId).findAny().orElse(0));
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
+    @RequestMapping(value = "/api/v1/manage/tests/id/{id}", method = RequestMethod.DELETE)
+    public GenericResponse removeTestWithAllQuestions(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
+                                                      @PathVariable("id") int id) {
+        if (authToken != null && (userManager.userCanAccess(authToken, UserEntity.UserRole.REDACTOR)
+                || userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR))) {
+            return this.testManager.removeTest(authToken.getUserName(), id);
         } else {
             throw new ForbiddenException();
         }

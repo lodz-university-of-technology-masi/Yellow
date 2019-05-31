@@ -2,6 +2,7 @@ package edu.pl.masi.yellow.controller;
 
 import edu.pl.masi.yellow.controller.api.v1.Auth;
 import edu.pl.masi.yellow.controller.api.v1.manage.Positions;
+import edu.pl.masi.yellow.entity.PositionEntity;
 import edu.pl.masi.yellow.entity.UserEntity;
 import edu.pl.masi.yellow.manager.PositionManager;
 import edu.pl.masi.yellow.manager.UserManager;
@@ -144,7 +145,7 @@ public class ManagerPositionsTest {
     public void CanCreatePosition() {
         LoginToken login = new LoginToken("");
 
-        when(this.positionManager.createNewPosition(anyString())).thenReturn(new GenericResponse(""));
+        when(this.positionManager.createNewPosition(anyString())).thenReturn(new PositionEntity());
         when(this.userManager.userCanAccess(login, UserEntity.UserRole.MODERATOR)).thenReturn(true);
 
         assertNotNull(positionsController.createPosition(login, "a"));

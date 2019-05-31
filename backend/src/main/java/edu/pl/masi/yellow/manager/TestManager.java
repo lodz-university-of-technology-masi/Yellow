@@ -48,6 +48,23 @@ public class TestManager {
         return new TestDefResponse(test, this.questionManager.getAllQuestionsByTest(test));
     }
 
+    public GenericResponse removeTest(String requesterName, int id) {
+        UserEntity requesterUserEntity = userRepository.findByUsername(requesterName);
+        TestEntity test = testRepository.findById(id);
+
+        if (requesterUserEntity == null || test == null)
+            throw new ResourceNotFoundException();
+
+        if (requesterUserEntity.getRole().equals(UserEntity.UserRole.MODERATOR) || test.getOwner().equals(requesterUserEntity)) {
+            this.questionManager.getAllQuestionsByTest(test).stream()
+                    .forEach(q -> this.questionManager.removeQuestion(q));
+            this.testRepository.delete(test);
+            return new GenericResponse("Successfully removed question from test");
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
     public GenericResponse removeQuestionFromTest(String requesterName, int testId, int questionId) {
         UserEntity requesterUserEntity = userRepository.findByUsername(requesterName);
         TestEntity test = testRepository.findById(testId);
