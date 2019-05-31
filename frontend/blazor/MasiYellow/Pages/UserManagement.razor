@@ -56,7 +56,7 @@ else
 
     public void OnUserEdit(User user)
     {
-        UriHelper.NavigateTo($"/editUser/{user.Id}");
+        UriHelper.NavigateTo($"/editUser/{user.UserId}");
     }
 
     public async void OnUserRemove(User user)
@@ -64,6 +64,7 @@ else
         if (await ApiCommunicator.DeleteUser(user))
         {
             _users.Remove(user);
+            _users = _users;
         }
     }
 }

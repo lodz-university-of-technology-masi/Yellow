@@ -29,8 +29,8 @@ else
             @foreach (var question in _test.Questions)
             {
                 <tr>
-                    <td>@question.Description</td>
-                    <td>@question.QuestionType.ToString()</td>
+                    <td>@question.QuestionDesc</td>
+                    <td>@question.Type.ToString()</td>
                     <td>
                         <Button onclick="@(() => OnQuestionRemove(question))">Delete</Button>
                     </td>
@@ -55,12 +55,12 @@ else
 
     public void OnUserEdit(User user)
     {
-        UriHelper.NavigateTo($"/editUser/{user.Id}");
+        UriHelper.NavigateTo($"/editUser/{user.UserId}");
     }
 
     public async void OnQuestionRemove(Question question)
     {
-        if (await ApiCommunicator.DeleteTestQuestion(question))
+        if (await ApiCommunicator.DeleteTestQuestion(_test, question))
         {
             _test.Questions.Remove(question);
         }

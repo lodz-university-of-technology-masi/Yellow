@@ -58,10 +58,10 @@
 
         _assignemnts = _tests.Select(test => new TestPositionPair
         {
-            PositionId = _position.Id,
-            TestId = test.Id,
-            TestName = test.Name,
-            IsAssigned = _position.ApplicableTests.Contains(test.Id)
+            PositionId = _position.PositionId,
+            TestId = test.TestId,
+            TestName = test.TestName,
+            IsAssigned = _position.Tests.Contains(test.TestId)
         }).ToList();
     }
 

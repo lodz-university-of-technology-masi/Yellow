@@ -31,7 +31,7 @@ else
             @foreach (var user in _positions)
             {
                 <tr>
-                    <td>@user.Name</td>
+                    <td>@user.PositionName</td>
                     <td>
                         <Button onclick="@(() => OnPositionEdit(user))">Edit</Button>
                     </td>
@@ -71,7 +71,7 @@ else
 
     public void OnPositionEdit(WorkPosition position)
     {
-        UriHelper.Navigate($"/editTestsAssignment/{position.Id}");
+        UriHelper.Navigate($"/editTestsAssignment/{position.PositionId}");
     }
 
     public async void OnPositionRemove(WorkPosition position)
@@ -86,7 +86,7 @@ else
     {
         var position = new WorkPosition
         {
-            Name = _newPositionModel.Name
+            PositionName = _newPositionModel.Name
         };
 
         position = await ApiCommunicator.AddPosition(position);

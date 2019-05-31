@@ -31,7 +31,7 @@ else
             @foreach (var test in _tests)
             {
                 <tr>
-                    <td>@test.Name</td>
+                    <td>@test.TestName</td>
                     <td>
                         <Button onclick="@(() => OnTestEdit(test))">Edit</Button>
                     </td>
@@ -60,7 +60,7 @@ else
 
     public void OnTestEdit(Test test)
     {
-        UriHelper.Navigate($"/editTest/{test.Id}");
+        UriHelper.Navigate($"/editTest/{test.TestId}");
     }
 
     public async void OnTestRemove(Test test)

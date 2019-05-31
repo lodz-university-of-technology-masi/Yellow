@@ -1,159 +1,247 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Blazor.Extensions.Logging;
 using MasiYellow.Models;
 using MasiYellow.Models.Enums;
+using MasiYellow.Util;
+using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 
 namespace MasiYellow.Infrastructure
 {
     public class ApiCommunicator
     {
-        private readonly AuthorizationManager _authorizationManager;
+        private const string BaseAddress = "http://localhost:8080/api/v1/manage";
 
-        public ApiCommunicator(AuthorizationManager authorizationManager)
+        private readonly AuthorizationManager _authorizationManager;
+        private readonly ILogger<ApiCommunicator> _logger;
+        private HttpClient _httpClient;
+
+        public ApiCommunicator(
+            AuthorizationManager authorizationManager,
+            ILogger<ApiCommunicator> logger)
         {
             _authorizationManager = authorizationManager;
+            _logger = logger;
+            _authorizationManager.AuthChanged += UpdateHttpClient;
+
+            _httpClient = new HttpClient();
+            UpdateHttpClient(null, true);
         }
 
-        private List<User> _users = new List<User>
+        private void UpdateHttpClient(object sender, bool auth)
         {
-            new User
+            if (auth)
             {
-                Id = 1,
-                Username = Guid.NewGuid().ToString(),
-                Role = UserRole.User
-            },
-            new User
+                _logger.LogInformation("Setting token header.");
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Auth-Token", _authorizationManager.Token);
+            }
+            else
             {
-                Id = 2,
-                Username = Guid.NewGuid().ToString(),
-                Role = UserRole.Redactor
-            },
-            new User
-            {
-                Id = 3,
-                Username = Guid.NewGuid().ToString(),
-                Role = UserRole.Moderator
-            },
-        };
-
-        private List<WorkPosition> _positions = new List<WorkPosition>
-        {
-            new WorkPosition
-            {
-                Id = 1,
-                Name = "Worker1",
-                ApplicableTests = new List<long>{1}
-            },
-            new WorkPosition
-            {
-                Id = 1,
-                Name = "Worker2",
-                ApplicableTests = new List<long>{3}
-            },
-        };
-
-
-        private List<Test> _tests = new List<Test>
-        {
-            new Test
-            {
-                Id = 1,
-                Name = "Test1",
-                Questions = new List<Question>
-                {
-                    new Question
-                    {
-                        Description = "What is life?",
-                        QuestionType = QuestionType.Choice
-                    }
-                }
-            },
-            new Test
-            {
-                Id = 2,
-                Name = "Test2",
-            },
-            new Test
-            {
-                Id = 3,
-                Name = "Test3",
-            },
-            new Test
-            {
-                Id = 4,
-                Name = "Test4",
-            },
-        };
+                if (_httpClient.DefaultRequestHeaders.Contains("Auth-Token"))
+                    _httpClient.DefaultRequestHeaders.Remove("Auth-Token");
+            }
+        }
 
         public async Task<List<User>> GetAllUsers()
         {
-            return _users.ToList();
+            try
+            {
+                return Json.Deserialize<List<User>>(await _httpClient.GetStringAsync($"{BaseAddress}/redactors"));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new List<User>();
+            }
         }
 
         public async Task<User> GetUser(long id)
         {
-            return _users.First(user => user.Id == id);
+            try
+            {
+                return Json.Deserialize<List<User>>(await _httpClient.GetStringAsync($"{BaseAddress}/redactors"))
+                    .First(user => user.UserId == id);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new User();
+            }
         }
 
         public async Task<bool> UpdateUser(User user)
         {
-            return true;
+            try
+            {
+                HttpResponseMessage response;
+                if (user.Role == UserRole.Redactor)
+                {
+                    response = await _httpClient.PutAsync($"{BaseAddress}/redactors/{user.UserId}", null);
+                }
+                else
+                {
+                    response = await _httpClient.DeleteAsync($"{BaseAddress}/redactors/{user.UserId}");
+                }
+
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
         }
 
         public async Task<bool> DeleteUser(User user)
         {
-            return true;
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"{BaseAddress}/users/{user.UserId}");
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
         }
 
         public async Task<List<WorkPosition>> GetAllPositions()
         {
-            return _positions.ToList();
+            try
+            {
+                return Json.Deserialize<List<WorkPosition>>(await _httpClient.GetStringAsync($"{BaseAddress}/positions"));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new List<WorkPosition>();
+            }
         }
 
         public async Task<WorkPosition> GetPosition(long id)
         {
-            return _positions.First(user => user.Id == id);
+            try
+            {
+                return Json
+                    .Deserialize<List<WorkPosition>>(await _httpClient.GetStringAsync($"{BaseAddress}/positions"))
+                    .First(position => position.PositionId == id);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new WorkPosition();
+            }
         }
 
         public async Task<WorkPosition> AddPosition(WorkPosition position)
         {
-            _positions.Add(position);
-            position.Id = _positions.Max(workPosition => workPosition.Id) + 1;
-            return position;
+            try
+            {
+                var response = await _httpClient.GetAsync($"{BaseAddress}/positions/create?name={position.PositionName}");
+                response.EnsureSuccessStatusCode();
+
+                return Json.Deserialize<WorkPosition>(await response.Content.ReadAsStringAsync());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new WorkPosition();
+            }
         }
 
         public async Task<bool> DeletePosition(WorkPosition position)
         {
-            return true;
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"{BaseAddress}/positions/{position.PositionId}");
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
         }
 
         public async Task<List<Test>> GetAllTests()
         {
-            return _tests.ToList();
+
+            try
+            {
+                if (_authorizationManager.CurrentUserRole == UserRole.Redactor)
+                    return Json.Deserialize<List<Test>>(await _httpClient.GetStringAsync($"{BaseAddress}/tests/me"));
+                else
+                    return Json.Deserialize<List<Test>>(await _httpClient.GetStringAsync($"{BaseAddress}/tests"));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new List<Test>();
+            }
         }
 
         public async Task<bool> DeleteTest(Test test)
         {
-            return true;
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"{BaseAddress}/tests/id/{test.TestId}");
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
         }
 
         public async Task<Test> GetTest(int id)
         {
-            return _tests.First(test => test.Id == id);
+            try
+            {
+                return Json.Deserialize<Test>(await _httpClient.GetStringAsync($"{BaseAddress}/tests/id/{id}"));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new Test();
+            }
         }
 
-        public async Task<bool> DeleteTestQuestion(Question question)
+        public async Task<bool> DeleteTestQuestion(Test test, Question question)
         {
-            return true;
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"{BaseAddress}/tests/modify/{test.TestId}/{question.QuestionId}");
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
         }
 
         public async Task<bool> AddTest(Test test)
         {
-            test.Id = _tests.Max(t => t.Id) + 1;
-            _tests.Add(test);
             return true;
+            //test.TestId = _tests.Max(t => t.TestId) + 1;
+            //_tests.Add(test);
+            //return true;
         }
     }
 }

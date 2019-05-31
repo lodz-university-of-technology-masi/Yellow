@@ -8,8 +8,8 @@ namespace MasiYellow.Models
 {
     public class Test
     {
-        public long Id { get; set; }
-        public string Name { get; set; }
+        public long TestId { get; set; }
+        public string TestName { get; set; }
         public List<Question> Questions { get; set; } = new List<Question>();
     }
 }

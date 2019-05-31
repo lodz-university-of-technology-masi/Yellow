@@ -8,10 +8,20 @@ namespace MasiYellow.Models
 {
     public class Question
     {
-        public long Id { get; set; }
-        public int Number { get; set; }
-        public string Language { get; set; }
-        public string Description { get; set; }
-        public QuestionType QuestionType { get; set; }
+        public long QuestionId { get; set; }
+        public int QuestionNumber { get; set; }
+        public string QuestionLang { get; set; }
+        public string QuestionDesc { get; set; }
+        public QuestionType Type { get; set; }
+
+        private string QuestionType
+        {
+            get { return Type.ToString().ToUpper(); }
+            set
+            {
+                if (Enum.TryParse(value, true, out QuestionType result))
+                    Type = result;
+            }
+        }
     }
 }

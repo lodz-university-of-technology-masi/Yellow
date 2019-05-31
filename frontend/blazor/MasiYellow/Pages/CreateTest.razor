@@ -21,7 +21,7 @@
 else
 {
     <p>Test Name:</p>
-    <input id="username" bind="@_test.Name" />
+    <input id="username" bind="@_test.TestName" />
     <br/>
     <br/>
     <br/>
@@ -37,8 +37,8 @@ else
             @foreach (var question in _test.Questions)
             {
                 <tr>
-                    <td>@question.Description</td>
-                    <td>@question.QuestionType.ToString()</td>
+                    <td>@question.QuestionDesc</td>
+                    <td>@question.Type.ToString()</td>
                     <td>
                         <Button onclick="@(() => OnQuestionRemove(question))">Delete</Button>
                     </td>
@@ -109,15 +109,15 @@ else
     {
         _test.Questions.Add(new Question
         {
-            Description = _newQuestionModel.Question,
-            QuestionType = _newQuestionModel.QuestionType
+            QuestionDesc = _newQuestionModel.Question,
+            Type = _newQuestionModel.QuestionType
         });
         _newQuestionModel = new QuestionModel();
     }
 
     public async void OnQuestionRemove(Question question)
     {
-        if (await ApiCommunicator.DeleteTestQuestion(question))
+        if (await ApiCommunicator.DeleteTestQuestion(_test, question))
         {
             _test.Questions.Remove(question);
         }

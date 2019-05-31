@@ -11,11 +11,11 @@ namespace MasiYellow.Models
     {
         [Required]
         [StringLength(16, ErrorMessage = "Username needs to be 6-16 characters long", MinimumLength = 6)]
-        public string Username { get; set; } = "testtest";
+        public string Username { get; set; } = "testUser9";
 
         [Required]
         [PasswordPropertyText(true)]
         [StringLength(16, ErrorMessage = "Password needs to be 6-16 characters long", MinimumLength = 6)]
-        public string Password { get; set; } = "lollol";
+        public string Password { get; set; } = "password";
     }
 }
