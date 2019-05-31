@@ -9,13 +9,13 @@ import static junit.framework.TestCase.*;
 public class LoginTokenTest {
     @Test
     public void InvalidToken() {
-        LoginToken token = new LoginToken("", "");
+        LoginToken token = new LoginToken("", "", null);
         assertFalse(token.isValid());
     }
 
     @Test
     public void ValidTokenDecomposition() {
-        LoginToken token = new LoginToken("exampleUserName", "testPassword");
+        LoginToken token = new LoginToken("exampleUserName", "testPassword", null);
 
         assertEquals("exampleUserName", token.getUserName());
         assertEquals("testPassword", token.getUserPassword());
@@ -25,7 +25,7 @@ public class LoginTokenTest {
 
     @Test
     public void CanTokenToJSONSerialization() {
-        LoginToken token = new LoginToken("exampleUserName", "testPassword");
+        LoginToken token = new LoginToken("exampleUserName", "testPassword", null);
         ObjectMapper mapper = new ObjectMapper();
 
         try {
