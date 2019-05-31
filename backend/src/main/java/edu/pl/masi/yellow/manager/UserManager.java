@@ -80,7 +80,7 @@ public class UserManager {
         return userRepository.save(user);
     }
 
-    public GenericResponse deleteUser(Long id) {
+    public GenericResponse deleteUser(int id) {
         userRepository.deleteById(id);
         return new GenericResponse("Deleted user");
     }

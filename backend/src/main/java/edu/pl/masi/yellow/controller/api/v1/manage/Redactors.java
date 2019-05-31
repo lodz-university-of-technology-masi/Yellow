@@ -60,7 +60,7 @@ public class Redactors {
             required = false) LoginToken authToken, @PathVariable("id") int id) {
         if (authToken != null && userManager.userCanAccess(authToken,
                 UserEntity.UserRole.MODERATOR)) {
-            return userManager.deleteUser(Long.valueOf(id));
+            return userManager.deleteUser(id);
         } else {
             throw new ForbiddenException();
         }
