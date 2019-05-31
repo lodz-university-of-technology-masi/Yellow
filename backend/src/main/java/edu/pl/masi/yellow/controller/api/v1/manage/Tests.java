@@ -19,7 +19,7 @@ public class Tests {
     private UserManager userManager;
 
 
-    @RequestMapping(value = "api/v1/manage/tests/", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/v1/manage/tests", method = RequestMethod.GET)
     public List<TestDefResponse> getAllTests(@RequestHeader(name = "Auth-Token",
             required = false) LoginToken authToken) {
         if (authToken != null && userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR)) {
