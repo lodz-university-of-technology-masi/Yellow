@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> {
+public interface QuestionRepository extends JpaRepository<QuestionEntity, Integer> {
     @Query("SELECT q FROM QuestionEntity q WHERE q.test = :test")
     List<QuestionEntity> findByTest(@Param("test") TestEntity testEntity);
 }

@@ -106,4 +106,9 @@ public class Positions {
     public void setPositionManager(PositionManager positionManager) {
         this.positionManager = positionManager;
     }
+
+    @Autowired
+    public void setQuestionManager(QuestionManager questionManager) {
+        this.questionManager = questionManager;
+    }
 }
