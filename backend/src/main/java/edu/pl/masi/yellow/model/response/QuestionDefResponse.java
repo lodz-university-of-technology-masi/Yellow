@@ -27,4 +27,8 @@ public class QuestionDefResponse {
         this.type = entity.getType();
         this.questionId = entity.getId();
     }
+
+    public String getLang() {
+        return this.questionLang;
+    }
 }

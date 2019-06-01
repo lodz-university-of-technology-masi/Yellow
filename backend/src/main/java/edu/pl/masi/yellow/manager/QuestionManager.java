@@ -18,7 +18,7 @@ public class QuestionManager {
 
     }
 
-    List<QuestionEntity> getAllQuestionsByTest(TestEntity test) {
+    public List<QuestionEntity> getAllQuestionsByTest(TestEntity test) {
         return this.questionRepository.findByTest(test);
     }
 

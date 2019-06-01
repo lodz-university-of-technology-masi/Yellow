@@ -38,6 +38,8 @@ Get all test for redactor
   {
     "testId": 0,
     "testName": "name",
+    "language": ["PL", "EN"],
+    
     "testOwner": {
       // user data for owner
     },
@@ -136,6 +138,9 @@ Get all available position with status
   }
 ]
 ```
+
+##### GET /api/v1/manage/positions/{lang}
+Get positions that have tests in given language
 
 ##### DELETE /api/v1/manage/positions/{id}
 Delete position with given ID

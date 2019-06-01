@@ -1,5 +1,6 @@
 package edu.pl.masi.yellow.model.response;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.pl.masi.yellow.entity.QuestionEntity;
 import edu.pl.masi.yellow.entity.TestEntity;
@@ -44,5 +45,11 @@ public class TestDefResponse {
 
         }
         return response;
+    }
+
+    @JsonGetter("language")
+    public List<String> getTestLanguage() {
+        return  questionList.stream().map(q -> q.getLang())
+                .distinct().collect(Collectors.toList());
     }
 }
