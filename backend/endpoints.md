@@ -159,3 +159,24 @@ Add test to position
 
 ##### DELETE /api/v1/manage/positions/{positionId}/{testId}
 Remove test from position
+
+
+##### POST /api/v1/manage/answer
+Answer to test
+
+```json
+{
+  "testId": 0,
+  "positionId": 0,
+  "language": "EN",
+  "answers": [
+    {
+      "questionId": 0,
+      "answer": "My Answer"
+    },
+    {
+      // ...
+    }
+  ]
+}
+```
