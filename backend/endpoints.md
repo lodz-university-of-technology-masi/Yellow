@@ -180,3 +180,12 @@ Answer to test
   ]
 }
 ```
+
+#### GET /api/v1/tests/io/csv/{testId}
+Get test as csv file
+
+#### GET /api/v1/tests/io/pdf/{testId}
+Get test as pdf
+
+#### POST /api/v1/tests/io/upload
+Send CSV file to exprot as test
