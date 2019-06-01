@@ -1,0 +1,102 @@
+﻿@page "/postionManagement"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+@using MasiYellow.Models.View
+@using MasiYellow.Util
+@using Microsoft.AspNetCore.Components
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+
+<h1>Manage Positions</h1>
+
+@if (_positions == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Position Name</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in _positions)
+            {
+                <tr>
+                    <td>@user.PositionName</td>
+                    <td>
+                        <Button onclick="@(() => OnPositionEdit(user))">Edit</Button>
+                    </td>
+                    <td>
+                        <Button onclick="@(() => OnPositionRemove(user))">Delete</Button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h1>Add Position</h1>
+
+<EditForm Model="@_newPositionModel" OnSubmit="@AddPosition">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>Name:</p>
+    <InputText id="username" bind-Value="@_newPositionModel.Name" />
+    <br />
+    <br />
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+@functions {
+
+    private List<WorkPosition> _positions;
+
+    private WorkPositionModel _newPositionModel = new WorkPositionModel();
+
+    protected override async Task OnInitAsync()
+    {
+        _positions = await ApiCommunicator.GetAllPositions();
+    }
+
+    public void OnPositionEdit(WorkPosition position)
+    {
+        UriHelper.Navigate($"/editTestsAssignment/{position.PositionId}");
+    }
+
+    public async void OnPositionRemove(WorkPosition position)
+    {
+        if (await ApiCommunicator.DeletePosition(position))
+        {
+            _positions.Remove(position);
+        }
+    }
+
+    public async void AddPosition()
+    {
+        var position = new WorkPosition
+        {
+            PositionName = _newPositionModel.Name
+        };
+
+        position = await ApiCommunicator.AddPosition(position);
+
+        if (position != null)
+        {
+            _positions.Add(position);
+            _newPositionModel = new WorkPositionModel();
+            StateHasChanged();
+        }
+
+    }
+}

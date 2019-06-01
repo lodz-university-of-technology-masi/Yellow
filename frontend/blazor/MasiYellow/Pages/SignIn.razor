@@ -3,9 +3,12 @@
 @using Infrastructure
 @using Blazored
 @using Blazored.Toast.Services
+@using MasiYellow.Util
+@using Microsoft.AspNetCore.Components
 
-@inject IToastService _toastService
-@inject IUriHelper _uriHelper
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject AuthorizationManager AuthorizationManager
 
 <h1>Sign In</h1>
 
@@ -24,21 +27,18 @@
 
 @functions {
 
-    [Inject]
-    public AuthorizationManager AuthorizationManager { get; set; }
-
     private LoginModel _authModel = new LoginModel();
 
     async void Submit()
     {
         if (await AuthorizationManager.SignIn(_authModel.Username, _authModel.Password))
         {
-            _toastService.ShowSuccess("Success.");
-            _uriHelper.NavigateTo("");
+            ToastService.ShowSuccess("Success.");
+            UriHelper.Navigate("");
         }
         else
         {
-            _toastService.ShowError("Error.");
+            ToastService.ShowError("Error.");
         }
     }
 }

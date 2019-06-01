@@ -29,6 +29,7 @@ namespace MasiYellow.Infrastructure
         }
 
         public string Token { get; set; }
+        public UserRole CurrentUserRole { get; set; } = UserRole.Moderator;
 
         private HttpClient _httpClient = new HttpClient
         {
@@ -53,9 +54,14 @@ namespace MasiYellow.Infrastructure
                     password
                 }));
                 response.EnsureSuccessStatusCode();
-        
-                Token = Json.Deserialize<LoginResponse>(await response.Content.ReadAsStringAsync()).Token;
-                _logger.LogInformation($"Received token {Token}");
+
+                var json = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation($"Received response {json}");
+                var model = Json.Deserialize<LoginResponse>(json);
+                if(!model.Valid)
+                    throw new Exception();
+                Token = model.Token;
+                CurrentUserRole = model.UserRole;
                 Authorized = true;
                 return true;
             }

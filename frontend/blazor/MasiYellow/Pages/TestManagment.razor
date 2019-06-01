@@ -1,0 +1,73 @@
+﻿@page "/testsManagement"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+@using MasiYellow.Util
+@using Microsoft.AspNetCore.Components
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+@inject AuthorizationManager AuthorizationManager
+
+<h1>Manage Users</h1>
+
+@if (_tests == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Test Name</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var test in _tests)
+            {
+                <tr>
+                    <td>@test.TestName</td>
+                    <td>
+                        <Button onclick="@(() => OnTestEdit(test))">Edit</Button>
+                    </td>
+                    <td>
+                        <Button onclick="@(() => OnTestRemove(test))">Delete</Button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (AuthorizationManager.CurrentUserRole == UserRole.Redactor)
+{
+    <Button onclick="@(() => UriHelper.Navigate("createTest"))">Create New Test</Button>
+}
+
+@functions {
+
+    private List<Test> _tests;
+
+    protected override async Task OnInitAsync()
+    {
+        _tests = await ApiCommunicator.GetAllTests();
+    }
+
+    public void OnTestEdit(Test test)
+    {
+        UriHelper.Navigate($"/editTest/{test.TestId}");
+    }
+
+    public async void OnTestRemove(Test test)
+    {
+        if (await ApiCommunicator.DeleteTest(test))
+        {
+            _tests.Remove(test);
+        }
+    }
+}
