@@ -135,7 +135,7 @@ public class TestFormatterManagerTest {
         });
 
         assertEquals("Successfully uploaded test file", this.testFormatterManager.uploadCSV(
-                "myUser", "1;W;PL;DESC;3;A;B;C").getStatus());
+                "myUser", "1;W;PL;DESC;3;A;B;C", "name").getStatus());
     }
 
 

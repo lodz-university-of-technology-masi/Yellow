@@ -46,7 +46,8 @@ public class TestIO {
     public GenericResponse importFromCSV(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
                                          @RequestParam("file") MultipartFile file) throws IOException {
         if (authToken != null && userManager.userCanAccess(authToken, UserEntity.UserRole.REDACTOR)) {
-            return this.testIOFormatter.uploadCSV(authToken.getUserName(), new String(file.getBytes()));
+            return this.testIOFormatter.uploadCSV(authToken.getUserName(),
+                    new String(file.getBytes()), file.getName());
         } else {
             throw new ForbiddenException();
         }

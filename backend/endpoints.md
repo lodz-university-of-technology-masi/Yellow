@@ -81,6 +81,17 @@ Get all my test when logged as redactor
 ##### DELETE /api/v1/manage/tests/id/{id}
 Remove test with given id and all its questions
 
+
+##### POST /api/v1/manage/tests/rename
+Rename test:
+
+```json
+{
+  "testId": 0,
+  "newName": "New test name"
+}
+```
+
 ##### GET /api/v1/manage/tests/add?name={testname}
 Add new empty test, returns test object
 
@@ -137,3 +148,9 @@ Deactivate position with given ID
 
 ##### GET /api/v1/manage/positions/create?id={positionName}
 Generate new position, return serialized object with filled id
+
+##### PUT /api/v1/manage/positions/{positionId}/{testId}
+Add test to position
+
+##### DELETE /api/v1/manage/positions/{positionId}/{testId}
+Remove test from position

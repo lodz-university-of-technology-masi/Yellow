@@ -1,8 +1,12 @@
 package edu.pl.masi.yellow.manager;
 
 import edu.pl.masi.yellow.entity.PositionEntity;
+import edu.pl.masi.yellow.entity.TestEntity;
 import edu.pl.masi.yellow.model.response.GenericResponse;
 import edu.pl.masi.yellow.repository.PositionRepository;
+import edu.pl.masi.yellow.repository.TestRepository;
+import edu.pl.masi.yellow.utils.exceptions.ResourceNotFoundException;
+import org.aspectj.weaver.ast.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +16,7 @@ import java.util.List;
 @Service
 public class PositionManager {
     private PositionRepository positionRepository;
+    private TestRepository testRepository;
 
     public GenericResponse activatePositionById(int positionId) {
         PositionEntity positionEntity = this.positionRepository.findById(positionId);
@@ -50,6 +55,34 @@ public class PositionManager {
         return new GenericResponse("Successfully deleted position");
     }
 
+    public GenericResponse addTestToPosition(int positionId, int testId) {
+        PositionEntity positionEntity = this.positionRepository.findById(positionId);
+        TestEntity testEntity = this.testRepository.findById(testId);
+
+        if (positionEntity == null || testEntity == null)
+            throw new ResourceNotFoundException();
+
+        positionEntity.addTest(testEntity);
+        positionRepository.save(positionEntity);
+
+        return new GenericResponse("Added test to position");
+    }
+
+    public GenericResponse removeTestFromPosition(int positionId, int testId) {
+        PositionEntity positionEntity = this.positionRepository.findById(positionId);
+        TestEntity testEntity = this.testRepository.findById(testId);
+
+        if (positionEntity == null || testEntity == null)
+            throw new ResourceNotFoundException();
+
+        if (positionEntity.getTestEntities().contains(testEntity)) {
+            positionEntity.removeTest(testEntity);
+            positionRepository.save(positionEntity);
+        }
+
+        return new GenericResponse("Added test to position");
+    }
+
     public List<PositionEntity> getAllPositions() {
         return this.positionRepository.findAll();
     }
@@ -57,6 +90,11 @@ public class PositionManager {
     @Autowired
     public void setPositionRepository(PositionRepository positionRepository) {
         this.positionRepository = positionRepository;
+    }
+
+    @Autowired
+    public void setTestRepository(TestRepository testRepository) {
+        this.testRepository = testRepository;
     }
 
 }

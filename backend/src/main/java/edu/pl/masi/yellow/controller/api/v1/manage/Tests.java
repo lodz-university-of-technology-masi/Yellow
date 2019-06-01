@@ -5,6 +5,7 @@ import edu.pl.masi.yellow.manager.TestManager;
 import edu.pl.masi.yellow.manager.UserManager;
 import edu.pl.masi.yellow.model.LoginToken;
 import edu.pl.masi.yellow.model.request.QuestionAddRequest;
+import edu.pl.masi.yellow.model.request.TestRenameRequest;
 import edu.pl.masi.yellow.model.response.GenericResponse;
 import edu.pl.masi.yellow.model.response.TestDefResponse;
 import edu.pl.masi.yellow.utils.exceptions.ForbiddenException;
@@ -60,6 +61,17 @@ public class Tests {
         if (authToken != null && (userManager.userCanAccess(authToken, UserEntity.UserRole.REDACTOR)
                 || userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR))) {
             return this.testManager.removeTest(authToken.getUserName(), id);
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
+    @RequestMapping(value = "/api/v1/manage/tests/rename", method = RequestMethod.POST)
+    public GenericResponse renameTest(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
+                                      TestRenameRequest rename) {
+        if (authToken != null && (userManager.userCanAccess(authToken, UserEntity.UserRole.REDACTOR)
+                || userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR))) {
+            return this.testManager.renameTest(authToken.getUserName(), rename);
         } else {
             throw new ForbiddenException();
         }
