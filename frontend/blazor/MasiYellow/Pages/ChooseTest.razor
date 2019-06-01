@@ -1,0 +1,80 @@
+﻿@page "/chooseTest"
+@using Models
+@using Models.View
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+@using Microsoft.AspNetCore.Components
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+
+<h1>Assignments</h1>
+
+@if (_position != null)
+{
+    <p>Is Active:</p>
+    <input type="checkbox" bind="@_position.IsActive" /><br />
+    <p>Role:</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Test Name</th>
+                <th>Is Assigned</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var assignment in _assignemnts)
+            {
+                <tr>
+                    <td>@assignment.TestName</td>
+                    <td>    
+                        <input type="checkbox" bind="@assignment.IsAssigned" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <button type="submit" onclick="@Submit">Save</button>
+}
+
+
+
+@functions {
+
+    [Parameter]
+    private string Id { get; set; }
+
+    private WorkPosition _position;
+    private List<Test> _tests;
+    private List<TestPositionPair> _assignemnts;
+
+    protected override async Task OnInitAsync()
+    {
+        _position = await ApiCommunicator.GetPosition(int.Parse(Id));
+        _tests = await ApiCommunicator.GetAllTests();
+
+        _assignemnts = _tests.Select(test => new TestPositionPair
+        {
+            PositionId = _position.PositionId,
+            TestId = test.TestId,
+            TestName = test.TestName,
+            Original = _position.Tests.Contains(test.TestId),
+            IsAssigned = _position.Tests.Contains(test.TestId)
+        }).ToList();
+    }
+
+    async void Submit()
+    {
+        foreach (var testPositionPair in _assignemnts.Where(pair => pair.Original != pair.IsAssigned))
+        {
+            if (testPositionPair.IsAssigned)
+            {
+
+            }
+        }
+    }
+
+}

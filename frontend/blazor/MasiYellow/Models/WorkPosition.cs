@@ -11,5 +11,14 @@ namespace MasiYellow.Models
         public string PositionName { get; set; }
         public bool IsActive { get; set; }
         public List<long> Tests { get; set; } = new List<long>();
+
+
+        public override bool Equals(object obj)
+        {
+            var position = obj as WorkPosition;
+            if (position == null)
+                return false;
+            return PositionId == position.PositionId;
+        }
     }
 }

@@ -67,6 +67,7 @@ namespace MasiYellow.Infrastructure
             }
             catch (Exception e)
             {
+                Authorized = false;
                 _logger.LogError(e);
                 return false;
             }
