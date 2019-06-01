@@ -2,6 +2,7 @@ package edu.pl.masi.yellow.entity;
 
 import javax.persistence.*;
 
+@Entity
 public class AnswerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
