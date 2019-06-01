@@ -1,0 +1,128 @@
+﻿@page "/editTest/{Id}"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+@using MasiYellow.Models.Enums
+@using MasiYellow.Models.View
+@using Microsoft.AspNetCore.Components
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+
+<h1>Edit test</h1>
+
+@if (_test == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Type</th>
+                <th>Number</th>
+                <th>Language</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var question in _test.Questions)
+            {
+                <tr>
+                    <td>@question.QuestionDesc</td>
+                    <td>@question.Type.ToString()</td>
+                    <td>@question.QuestionNumber.ToString()</td>
+                    <td>@question.QuestionLang</td>
+                    <td>
+                        <Button onclick="@(() => OnQuestionRemove(question))">Delete</Button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h1>Add Question</h1>
+
+<EditForm Model="@_newQuestionModel" OnSubmit="@AddQuestion">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>Question:</p>
+    <InputText bind-Value="@_newQuestionModel.Question" />
+    <p>Language:</p>
+    <InputText bind-Value="@_newQuestionModel.Language" />
+    <p>Question Type:</p>
+    <select id="select-box" bind="@_newQuestionModel.QuestionType">
+        <option value=@QuestionType.Open>@QuestionType.Open.ToString()</option>
+        <option value=@QuestionType.Choice>@QuestionType.Choice.ToString()</option>
+        <option value=@QuestionType.Number>@QuestionType.Number.ToString()</option>
+        <option value=@QuestionType.Scale>@QuestionType.Scale.ToString()</option>
+    </select>
+    @if (_newQuestionModel.QuestionType == QuestionType.Choice)
+    {
+        <p>Choices (pipe "|" separated):</p>
+        <InputText id="username" bind-Value="@_newQuestionModel.Choices" />
+    }
+    else if (_newQuestionModel.QuestionType == QuestionType.Scale)
+    {
+        <p>Minimum</p>
+        <InputText id="username" bind-Value="@_newQuestionModel.ScaleMin" />
+        <p>Maximum</p>
+        <InputText id="username" bind-Value="@_newQuestionModel.ScaleMax" />
+    }
+    <br />
+    <br />
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+@functions {
+
+    [Parameter]
+    private string Id { get; set; }
+
+    private Test _test;
+    private QuestionModel _newQuestionModel = new QuestionModel();
+
+    protected override async Task OnInitAsync()
+    {
+        _test = await ApiCommunicator.GetTest(int.Parse(Id));
+    }
+
+    public async void AddQuestion()
+    {
+
+        var nextNumber = 0;
+        if (_test.Questions.Any())
+        {
+            nextNumber = _test.Questions.Max(question => question.QuestionNumber) + 1;
+        }
+
+        if (await ApiCommunicator.AddQuestion(_test.TestId.ToString(), nextNumber, _newQuestionModel))
+        {
+            _test.Questions.Add(new Question
+            {
+                QuestionNumber = nextNumber,
+                QuestionLang = _newQuestionModel.Language,
+                QuestionDesc = _newQuestionModel.Question,
+                Type = _newQuestionModel.QuestionType
+            });
+            _newQuestionModel = new QuestionModel();
+            StateHasChanged();
+        }
+    }
+
+    public async void OnQuestionRemove(Question question)
+    {
+        if (await ApiCommunicator.DeleteTestQuestion(_test, question))
+        {
+            _test.Questions.Remove(question);
+        }
+    }
+
+}

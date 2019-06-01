@@ -1,0 +1,60 @@
+﻿@page "/createTest"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+@using MasiYellow.Models.Enums
+@using MasiYellow.Models.View
+@using MasiYellow.Util
+@using Microsoft.AspNetCore.Components
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+
+<h1>Create Test</h1>
+
+@if (_test == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>Test Name:</p>
+    <input bind="@_test.TestName"/>
+    <br/>
+    <br/>
+
+    <Button onclick="@SubmitTest">Submit This Test</Button>
+}
+
+@functions {
+
+    [Parameter]
+    private string Id { get; set; }
+
+    private Test _test;
+    private QuestionModel _newQuestionModel = new QuestionModel();
+
+    protected override async Task OnInitAsync()
+    {
+        _test = new Test();
+    }
+
+    public async void SubmitTest()
+    {
+        if (await ApiCommunicator.AddTest(_test))
+        {
+            UriHelper.Navigate("testsManagement");
+        }
+    }
+
+
+    public async void OnQuestionRemove(Question question)
+    {
+        if (await ApiCommunicator.DeleteTestQuestion(_test, question))
+        {
+            _test.Questions.Remove(question);
+        }
+    }
+}

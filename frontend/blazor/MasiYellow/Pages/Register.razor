@@ -3,9 +3,12 @@
 @using Infrastructure
 @using Blazored
 @using Blazored.Toast.Services
+@using MasiYellow.Util
+@using Microsoft.AspNetCore.Components
 
-@inject IToastService _toastService
-@inject IUriHelper _uriHelper
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject AuthorizationManager AuthorizationManager
 
 <h1>Register</h1>
 
@@ -18,7 +21,7 @@
     <p>Password:</p>
     <InputText id="password" bind-Value="@_authModel.Password" />
     <p>Repeat password:</p>
-    <InputText id="password" bind-Value="@_authModel.PasswordRepeat" />
+    <InputText id="passwordRepeat" bind-Value="@_authModel.PasswordRepeat" />
     <br />
     <button type="submit">Submit</button>
 </EditForm>
@@ -26,23 +29,18 @@
 
 @functions {
 
-    [Inject]
-    public AuthorizationManager AuthorizationManager { get; set; }
-
     private RegisterModel _authModel = new RegisterModel();
-
-    int currentCount = 0;
 
     async void Submit()
     {
         if (await AuthorizationManager.Register(_authModel.Username, _authModel.Password))
         {
-            _toastService.ShowSuccess("Success.");
-            _uriHelper.NavigateTo("/login");
+            ToastService.ShowSuccess("Success.");
+            UriHelper.Navigate("/login");
         }
         else
         {
-            _toastService.ShowError("Error.");
+            ToastService.ShowError("Error.");
         }
     }
 }
