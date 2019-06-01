@@ -25,6 +25,7 @@ public class PositionManager {
             return new GenericResponse("Error: Position with given id does not exist!");
 
         positionEntity.setActive(true);
+        positionRepository.save(positionEntity);
         return new GenericResponse("Successfully activated position");
     }
 
@@ -35,6 +36,7 @@ public class PositionManager {
             return new GenericResponse("Error: Position with given id does not exist!");
 
         positionEntity.setActive(false);
+        positionRepository.save(positionEntity);
         return new GenericResponse("Successfully deactivated position");
     }
 
