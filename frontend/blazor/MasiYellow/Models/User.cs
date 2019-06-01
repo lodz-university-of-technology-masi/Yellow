@@ -22,5 +22,13 @@ namespace MasiYellow.Models
                     Role = result;
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            var user = obj as User;
+            if (user == null)
+                return false;
+            return UserId == user.UserId;
+        }
     }
 }

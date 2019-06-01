@@ -1,4 +1,4 @@
-﻿@using Infrastructure
+﻿@using MasiYellow.Infrastructure
 @using MasiYellow.Models
 @using Microsoft.Extensions.Logging
 @inject AuthorizationManager AuthManager
@@ -34,28 +34,37 @@
         }
         else
         {
-            @if (AuthManager.CurrentUserRole == Models.UserRole.Moderator)
-            {
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="userManagement">
-                        <span class="oi oi-person" aria-hidden="true"></span> User Management
-                    </NavLink>
-                </li>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="postionManagement">
-                        <span class="oi oi-tablet" aria-hidden="true"></span> Postion Management
-                    </NavLink>
-                </li>
-            }
+            @if (AuthManager.CurrentUserRole == UserRole.Moderator)
+             {
+                 <li class="nav-item px-3">
+                     <NavLink class="nav-link" href="userManagement">
+                         <span class="oi oi-person" aria-hidden="true"></span> User Management
+                     </NavLink>
+                 </li>
+                 <li class="nav-item px-3">
+                     <NavLink class="nav-link" href="postionManagement">
+                         <span class="oi oi-tablet" aria-hidden="true"></span> Position Management
+                     </NavLink>
+                 </li>
+             }
 
             @if (AuthManager.CurrentUserRole >= UserRole.Redactor)
-            {
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="testsManagement">
-                        <span class="oi oi-question-mark" aria-hidden="true"></span> Tests Management
-                    </NavLink>
-                </li>
-            }
+             {
+                 <li class="nav-item px-3">
+                     <NavLink class="nav-link" href="testsManagement">
+                         <span class="oi oi-question-mark" aria-hidden="true"></span> Tests Management
+                     </NavLink>
+                 </li>
+             }
+
+            @if (AuthManager.CurrentUserRole == UserRole.User)
+             {
+                 <li class="nav-item px-3">
+                     <NavLink class="nav-link" href="choosePosition">
+                         <span class="oi oi-pencil" aria-hidden="true"></span> Solve Test
+                     </NavLink>
+                 </li>
+             }
 
             <li class="nav-item px-3">
                 <a class="nav-link" href="" onclick="@LogOut">
@@ -68,9 +77,10 @@
 </div>
 
 @functions {
+
     protected override void OnInit()
     {
-        Logger.LogInformation($"Initializing");
+        Logger.LogInformation("Initializing");
         AuthManager.AuthChanged += (_, v) =>
         {
             Logger.LogInformation($"Updating to auth state {v}");
@@ -87,4 +97,5 @@
     {
         AuthManager.SignOut();
     }
+
 }

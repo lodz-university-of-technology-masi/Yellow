@@ -1,0 +1,62 @@
+﻿@page "/chooseTest/{Language}/{PositionId}"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+@using MasiYellow.Util
+@using Microsoft.AspNetCore.Components
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+@inject AuthorizationManager AuthorizationManager
+
+<h1>Choose Test</h1>
+
+@if (_tests == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Test Name</th>
+                <th>Select</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var test in _tests)
+            {
+                <tr>
+                    <td>@test.TestName</td>
+                    <td>
+                        <Button onclick="@(() => OnTestSelect(test))">Select</Button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@functions {
+
+    [Parameter]
+    public string Language { get; set; }
+    [Parameter]
+    public string PositionId { get; set; }
+
+    private List<Test> _tests;
+
+    protected override async Task OnInitAsync()
+    {
+        _tests = await ApiCommunicator.GetAllTestsForPositionInLanguage(Language, PositionId);
+    }
+
+    public async void OnTestSelect(Test test)
+    {
+        UriHelper.Navigate($"solveTest/{Language}/{PositionId}/{test.TestId}");
+    }
+
+}

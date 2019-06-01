@@ -1,0 +1,81 @@
+﻿@page "/choosePosition"
+@using Blazored.Toast.Services
+@using MasiYellow.Infrastructure
+@using MasiYellow.Models
+@using MasiYellow.Models.Enums
+@using MasiYellow.Models.View
+@using MasiYellow.Util
+@using Microsoft.AspNetCore.Components
+@using Microsoft.Extensions.Logging
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+@inject ILogger<ChoosePosition> Logger
+
+<h1>Choose Position</h1>
+
+
+<p>Choose your language:</p>
+<select id="select-box" onchange="@UpdatePositions">
+    <option value="@Language.En">@Language.En.ToString().ToUpper()</option>
+    <option value="@Language.Pl">@Language.Pl.ToString().ToUpper()</option>
+</select><br/>
+<p>Positions:</p>
+@if (!_positions?.Any() ?? true)
+{
+    <p>
+        <em>No tests available for selected language...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Position Name</th>
+            <th>Select</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var position in _positions)
+        {
+            <tr>
+                <td>@position.PositionName</td>
+                <td>
+                    <Button onclick="@(() => OnPositionSelect(position))">Edit</Button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+<br/>
+
+
+@functions {
+
+    private Language Language { get; set; }
+
+    private async void UpdatePositions(UIChangeEventArgs args)
+    {
+        Language = args == null ? Language : (Language)Enum.Parse(typeof(Language), (string)args.Value);
+        Logger.LogInformation("Refreshing.");
+        _positions = (await ApiCommunicator.GetPositionsWithTestsInLanguage(Language)).Where(position => position.IsActive).ToList();
+        StateHasChanged();
+    }
+
+    private List<WorkPosition> _positions;
+
+    protected override async Task OnInitAsync()
+    {
+        UpdatePositions(null);
+    }
+
+    private void OnPositionSelect(WorkPosition position)
+    {
+        UriHelper.Navigate($"chooseTest/{Language}/{position.PositionId}");
+    }
+
+}
