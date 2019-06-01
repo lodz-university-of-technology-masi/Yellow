@@ -57,12 +57,12 @@ public class TestFormatterManager {
         }
     }
 
-    public GenericResponse uploadCSV(String userName, String fileContent) {
+    public GenericResponse uploadCSV(String userName, String fileContent, String name) {
         UserEntity user = this.userRepository.findByUsername(userName);
         String fileLines[] = fileContent.split("\n");
 
         try {
-            TestEntity uploadedTest = this.testManager.createNewTest(user, "CSV Uploaded");
+            TestEntity uploadedTest = this.testManager.createNewTest(user, name);
 
             for (int i = 0; i < fileLines.length; ++i) {
                 QuestionEntity questionEntity = QuestionHelper.fromCSVLine(fileLines[i]);

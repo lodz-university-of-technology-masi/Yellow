@@ -63,6 +63,28 @@ public class Positions {
         }
     }
 
+    @RequestMapping(value = "/api/v1/manage/positions/{positionId}/{testId}", method = RequestMethod.PUT)
+    public GenericResponse addTestToPosition(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
+                                             @PathVariable("positionId") int positionId,
+                                             @PathVariable("testId") int testId) {
+        if (authToken != null && userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR)) {
+            return this.positionManager.addTestToPosition(positionId, testId);
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
+    @RequestMapping(value = "/api/v1/manage/positions/{positionId}/{testId}", method = RequestMethod.DELETE)
+    public GenericResponse removeTestFromPosition(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
+                                                  @PathVariable("positionId") int positionId,
+                                                  @PathVariable("testId") int testId) {
+        if (authToken != null && userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR)) {
+            return this.positionManager.removeTestFromPosition(positionId, testId);
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
     @Autowired
     public void setUserManager(UserManager userManager) {
         this.userManager = userManager;

@@ -91,7 +91,7 @@ public class ManagerTestIOTest {
 
         this.testIO.importFromCSV(login, multipartFile);
 
-        verify(testFormatterManager).uploadCSV("user", "fileContent");
+        verify(testFormatterManager).uploadCSV("user", "fileContent", null);
     }
 
     @Test(expected = ForbiddenException.class)
@@ -102,6 +102,6 @@ public class ManagerTestIOTest {
 
         this.testIO.importFromCSV(login, multipartFile);
 
-        verify(testFormatterManager).uploadCSV("user", "fileContent");
+        verify(testFormatterManager).uploadCSV("user", "fileContent", "name");
     }
 }

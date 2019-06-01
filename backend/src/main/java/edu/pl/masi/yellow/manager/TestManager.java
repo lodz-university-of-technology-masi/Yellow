@@ -3,6 +3,7 @@ package edu.pl.masi.yellow.manager;
 import edu.pl.masi.yellow.entity.TestEntity;
 import edu.pl.masi.yellow.entity.UserEntity;
 import edu.pl.masi.yellow.model.request.QuestionAddRequest;
+import edu.pl.masi.yellow.model.request.TestRenameRequest;
 import edu.pl.masi.yellow.model.response.GenericResponse;
 import edu.pl.masi.yellow.model.response.TestDefResponse;
 import edu.pl.masi.yellow.repository.TestRepository;
@@ -83,6 +84,22 @@ public class TestManager {
                     .forEach(q -> this.questionManager.removeQuestion(q));
             this.testRepository.delete(test);
             return new GenericResponse("Successfully removed question from test");
+        } else {
+            throw new ForbiddenException();
+        }
+    }
+
+    public GenericResponse renameTest(String requesterName, TestRenameRequest request) {
+        UserEntity requesterUserEntity = userRepository.findByUsername(requesterName);
+        TestEntity test = testRepository.findById(request.getId());
+
+        if (requesterUserEntity == null || test == null)
+            throw new ResourceNotFoundException();
+
+        if (requesterUserEntity.getRole().equals(UserEntity.UserRole.MODERATOR) || test.getOwner().equals(requesterUserEntity)) {
+            test.setTestname(request.getNewName());
+            testRepository.save(test);
+            return new GenericResponse("Successfully renamed test");
         } else {
             throw new ForbiddenException();
         }
