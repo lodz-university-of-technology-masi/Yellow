@@ -292,5 +292,27 @@ namespace MasiYellow.Infrastructure
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        public async Task<List<WorkPosition>> GetPositionsWithTestsInLanguage(Language language)
+        {
+            return new List<WorkPosition>
+            {
+                new WorkPosition
+                {
+                    PositionName = language == Language.En ? "EjBiSi" : "Abc"
+                }
+            };
+        }
+
+        public async Task<List<Test>> GetAllTestsForPositionInLanguage(string language, string positionId)
+        {
+            return new List<Test>
+            {
+                new Test
+                {
+                    TestName = "Test"
+                }
+            };
+        }
     }
 }

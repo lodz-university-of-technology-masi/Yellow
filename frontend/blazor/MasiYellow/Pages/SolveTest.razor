@@ -1,0 +1,120 @@
+﻿@page "/solveTest/{Language}/{PositionId}/{TestId}"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+@using MasiYellow.Models.Enums
+@using MasiYellow.Models.View
+@using Microsoft.AspNetCore.Components
+@using Microsoft.Extensions.Logging
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+@inject ILogger<SolveTest> Logger
+
+<h1>Solve Test</h1>
+
+@if (_test == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @foreach (var question in _questions)
+     {
+         <h4>Question: <b>@question.Item1.QuestionDesc</b></h4>
+
+         <EditForm Model="@question.Item2">
+             <DataAnnotationsValidator />
+             <ValidationSummary />
+
+             @if (question.Item1.Type == QuestionType.Open)
+             {
+                 <InputText bind-Value="@question.Item2.Answer" />
+             }
+             else if (question.Item1.Type == QuestionType.Number)
+             {
+                 <input type="number" bind="@question.Item2.Answer" />
+             }
+             else if (question.Item1.Type == QuestionType.Scale)
+             {
+                 <input type="range" min="@question.Item1.MinVal" max="@question.Item1.MaxVal" bind="@question.Item2.Answer" />
+             }
+             else if (question.Item1.Type == QuestionType.Choice)
+             {
+                 <select id="select-box" bind="@question.Item2.Answer">
+                     @foreach (var choice in question.Item1.Choices)
+                     {
+                         <option value=@choice>@choice</option>
+                     }
+                 </select>
+             }
+         </EditForm>
+     }
+}
+
+<Button onclick="@Submit">Submit</Button>
+
+
+@functions {
+
+    [Parameter]
+    public string Language { get; set; }
+    [Parameter]
+    public string PositionId { get; set; }
+    [Parameter]
+    public string TestId { get; set; }
+
+    private Test _test;
+
+    private List<(Question, QuestionAnswer)> _questions;
+
+    protected override async Task OnInitAsync()
+    {
+        //_test = await ApiCommunicator.GetTest(int.Parse(TestId));
+
+        _test = new Test
+        {
+            Questions = new List<Question>
+            {
+                new Question
+                {
+                    Type = QuestionType.Open,
+                    QuestionDesc = "Test1",
+                },
+                new Question
+                {
+                    Type = QuestionType.Number,
+                    QuestionDesc = "Test2",
+                },
+                new Question
+                {
+                    Type = QuestionType.Scale,
+                    MinVal = -100,
+                    MaxVal = 100,
+                    QuestionDesc = "Test3",
+                },
+                new Question
+                {
+                    Type = QuestionType.Choice,
+                    Choices = new[]
+                    {
+                        "A",
+                        "B",
+                        "C"
+                    },
+                    QuestionDesc = "Test4",
+                },
+            }
+        };
+
+        _questions = _test.Questions.Select(question => (question, new QuestionAnswer())).ToList();
+    }
+
+    private void Submit()
+    {
+        Logger.LogInformation(Microsoft.JSInterop.Json.Serialize(_questions));
+    }
+
+}
