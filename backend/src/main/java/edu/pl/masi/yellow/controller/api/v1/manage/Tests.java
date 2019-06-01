@@ -64,7 +64,7 @@ public class Tests {
 
     @RequestMapping(value = "/api/v1/manage/tests/rename", method = RequestMethod.POST)
     public GenericResponse renameTest(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
-                                      TestRenameRequest rename) {
+                                      @RequestBody TestRenameRequest rename) {
         if (authToken != null && (userManager.userCanAccess(authToken, UserEntity.UserRole.REDACTOR)
                 || userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR))) {
             return this.testManager.renameTest(authToken.getUserName(), rename);

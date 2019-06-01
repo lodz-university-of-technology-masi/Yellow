@@ -17,6 +17,7 @@ public class AnswerManager {
     private PositionRepository positionRepository;
     private SolutionRepositiory solutionRepositiory;
     private QuestionRepository questionRepository;
+    private AnswerRepository answerRepository;
 
     public GenericResponse answerTest(String name, TestSolutionRequest solutionRequest) {
         SolutionEntity solution = new SolutionEntity();
@@ -35,6 +36,8 @@ public class AnswerManager {
         solution.setListOfAnswers(solutionRequest.answerList.stream()
                 .map(a -> new AnswerEntity(questionRepository.findById(a.questionId).orElse(null),
                         a.answerString)).collect(Collectors.toList()));
+
+        solution.getListOfAnswers().stream().forEach(a -> this.answerRepository.save(a));
 
         solutionRepositiory.save(solution);
         return new GenericResponse("Solution to test saved");
@@ -63,5 +66,10 @@ public class AnswerManager {
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setAnswerRepository(AnswerRepository answerRepository) {
+        this.answerRepository = answerRepository;
     }
 }

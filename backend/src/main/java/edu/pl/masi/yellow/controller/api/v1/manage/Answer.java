@@ -8,10 +8,7 @@ import edu.pl.masi.yellow.model.request.TestSolutionRequest;
 import edu.pl.masi.yellow.model.response.GenericResponse;
 import edu.pl.masi.yellow.utils.exceptions.ForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class Answer {
@@ -20,7 +17,7 @@ public class Answer {
 
     @RequestMapping(value = "/api/v1/manage/answer", method = RequestMethod.POST)
     public GenericResponse answerTest(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
-                                      TestSolutionRequest answerRequest) {
+                                      @RequestBody TestSolutionRequest answerRequest) {
         if (authToken != null && userManager.userCanAccess(authToken, UserEntity.UserRole.USER)) {
             return this.answerManager.answerTest(authToken.getUserName(), answerRequest);
         } else {

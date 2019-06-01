@@ -5,14 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class TestSolutionRequest {
-    public class Answer {
-        @JsonProperty("questionId")
-        public int questionId;
-
-        @JsonProperty("answer")
-        public String answerString;
-    }
-
     @JsonProperty("testId")
     public int testId;
 
