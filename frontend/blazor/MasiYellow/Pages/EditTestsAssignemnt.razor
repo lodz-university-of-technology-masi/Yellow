@@ -4,6 +4,7 @@
 @using Infrastructure
 @using Blazored
 @using Blazored.Toast.Services
+@using MasiYellow.Util
 @using Microsoft.AspNetCore.Components
 
 @inject IToastService ToastService
@@ -72,9 +73,23 @@
         {
             if (testPositionPair.IsAssigned)
             {
-
+                await ApiCommunicator.AssignTestToPosition(testPositionPair.TestId, testPositionPair.PositionId);
+            }
+            else
+            {
+                await ApiCommunicator.RemoveAssignmentTestToPosition(testPositionPair.TestId, testPositionPair.PositionId);
             }
         }
+
+        if (_position.IsActive)
+        {
+            await ApiCommunicator.ActivatePosition(_position.PositionId);
+        }
+        else
+        {
+            await ApiCommunicator.DeactivatePosition(_position.PositionId);
+        }
+        UriHelper.Navigate("");
     }
 
 }

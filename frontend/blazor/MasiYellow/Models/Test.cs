@@ -11,7 +11,7 @@ namespace MasiYellow.Models
         public long TestId { get; set; }
         public string TestName { get; set; }
         public List<Question> Questions { get; set; } = new List<Question>();
-
+        public string[] Language { get; set; }
 
         public override bool Equals(object obj)
         {

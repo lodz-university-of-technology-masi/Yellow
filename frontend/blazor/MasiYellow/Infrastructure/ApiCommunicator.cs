@@ -295,24 +295,120 @@ namespace MasiYellow.Infrastructure
 
         public async Task<List<WorkPosition>> GetPositionsWithTestsInLanguage(Language language)
         {
-            return new List<WorkPosition>
+            try
             {
-                new WorkPosition
-                {
-                    PositionName = language == Language.En ? "EjBiSi" : "Abc"
-                }
-            };
+                return Json.Deserialize<List<WorkPosition>>(await _httpClient.GetStringAsync($"{BaseAddress}/positions/{language.ToString().ToUpper()}"));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new List<WorkPosition>();
+            }
         }
 
         public async Task<List<Test>> GetAllTestsForPositionInLanguage(string language, string positionId)
         {
-            return new List<Test>
+            try
             {
-                new Test
+                var allTests =
+                    Json.Deserialize<List<Test>>(await _httpClient.GetStringAsync($"{BaseAddress}/tests"));
+                var allPositions = await GetAllPositions();
+                var position = allPositions.First(workPosition => workPosition.PositionId == int.Parse(positionId));
+                return allTests.Where(test =>
+                    position.Tests.Contains(test.TestId) &&
+                    test.Language.Contains(language.ToUpper())).ToList();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new List<Test>();
+            }
+        }
+
+        public async Task<bool> AddTestSolution(List<QuestionAnswer> answers, string testId, string language, string positionId)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync($"{BaseAddress}/answer", new JsonContent(new
                 {
-                    TestName = "Test"
-                }
-            };
+                    testId = int.Parse(testId),
+                    positionId = int.Parse(positionId),
+                    language = language.ToUpper(),
+                    answers = answers
+                }));
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+        public async Task<bool> AssignTestToPosition(long testId, long positionId)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsync($"{BaseAddress}/positions/{positionId}/{testId}", null);
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+        public async Task<bool> RemoveAssignmentTestToPosition(long testId, long positionId)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"{BaseAddress}/positions/{positionId}/{testId}");
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+        public async Task<bool> ActivatePosition(long positionId)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsync($"{BaseAddress}/positions/{positionId}/activate", null);
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+        public async Task<bool> DeactivatePosition(long positionId)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsync($"{BaseAddress}/positions/{positionId}/deactivate", null);
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
         }
     }
 }

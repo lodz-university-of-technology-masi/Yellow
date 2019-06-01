@@ -62,7 +62,7 @@ else
     {
         Language = args == null ? Language : (Language)Enum.Parse(typeof(Language), (string)args.Value);
         Logger.LogInformation("Refreshing.");
-        _positions = await ApiCommunicator.GetPositionsWithTestsInLanguage(Language);
+        _positions = (await ApiCommunicator.GetPositionsWithTestsInLanguage(Language)).Where(position => position.IsActive).ToList();
         StateHasChanged();
     }
 

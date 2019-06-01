@@ -5,6 +5,7 @@
 @using Blazored.Toast.Services
 @using MasiYellow.Models.Enums
 @using MasiYellow.Models.View
+@using MasiYellow.Util
 @using Microsoft.AspNetCore.Components
 @using Microsoft.Extensions.Logging
 
@@ -72,49 +73,22 @@ else
 
     protected override async Task OnInitAsync()
     {
-        //_test = await ApiCommunicator.GetTest(int.Parse(TestId));
+        _test = await ApiCommunicator.GetTest(int.Parse(TestId));
 
-        _test = new Test
-        {
-            Questions = new List<Question>
+        _questions = _test.Questions.Where(question =>
+            question.QuestionLang.Equals(Language, StringComparison.InvariantCultureIgnoreCase)).Select(question => (question, new QuestionAnswer
             {
-                new Question
-                {
-                    Type = QuestionType.Open,
-                    QuestionDesc = "Test1",
-                },
-                new Question
-                {
-                    Type = QuestionType.Number,
-                    QuestionDesc = "Test2",
-                },
-                new Question
-                {
-                    Type = QuestionType.Scale,
-                    MinVal = -100,
-                    MaxVal = 100,
-                    QuestionDesc = "Test3",
-                },
-                new Question
-                {
-                    Type = QuestionType.Choice,
-                    Choices = new[]
-                    {
-                        "A",
-                        "B",
-                        "C"
-                    },
-                    QuestionDesc = "Test4",
-                },
-            }
-        };
-
-        _questions = _test.Questions.Select(question => (question, new QuestionAnswer())).ToList();
+                QuestionId = (int) question.QuestionId
+            }))
+            .ToList();
     }
 
-    private void Submit()
+    private async void Submit()
     {
-        Logger.LogInformation(Microsoft.JSInterop.Json.Serialize(_questions));
+        if (await ApiCommunicator.AddTestSolution(_questions.Select(tuple => tuple.Item2).ToList(), TestId, Language, PositionId))
+        {
+            UriHelper.Navigate("");
+        }
     }
 
 }
