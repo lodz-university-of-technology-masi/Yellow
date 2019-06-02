@@ -2,12 +2,15 @@ package edu.pl.masi.yellow.manager;
 
 import edu.pl.masi.yellow.entity.*;
 import edu.pl.masi.yellow.model.request.TestSolutionRequest;
+import edu.pl.masi.yellow.model.response.AnswerResponse;
 import edu.pl.masi.yellow.model.response.GenericResponse;
+import edu.pl.masi.yellow.model.response.TestSolutionResponse;
 import edu.pl.masi.yellow.repository.*;
 import edu.pl.masi.yellow.utils.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +44,50 @@ public class AnswerManager {
 
         solutionRepositiory.save(solution);
         return new GenericResponse("Solution to test saved");
+    }
+
+    public List<TestSolutionResponse> getAnswerTest(String redactorName) {
+        return this.solutionRepositiory.findAll().stream().filter(s -> s.getTestEntity()
+                .getOwner().getUsername().equals(redactorName)).map(s -> getResponse(s))
+                .collect(Collectors.toList());
+    }
+
+    public GenericResponse acceptAnswer(int answerId) {
+        AnswerEntity entity = this.answerRepository.findById(answerId).orElseThrow(ResourceNotFoundException::new);
+
+        entity.setAccepted(true);
+
+        this.answerRepository.save(entity);
+        return new GenericResponse("Accepted answer");
+    }
+
+    public GenericResponse refuseAnswer(int answerId) {
+        AnswerEntity entity = this.answerRepository.findById(answerId).orElseThrow(ResourceNotFoundException::new);
+
+        entity.setAccepted(false);
+
+        this.answerRepository.save(entity);
+        return new GenericResponse("Answer refused");
+    }
+
+    private TestSolutionResponse getResponse(SolutionEntity entity) {
+        TestSolutionResponse response = new TestSolutionResponse();
+        response.id = entity.getId();
+        response.positionId = entity.getPositionEntity().getId();
+        response.testId = entity.getTestEntity().getId();
+        response.language = entity.getLanguage();
+
+        response.answerList = entity.getListOfAnswers().stream().map(a -> {
+            AnswerResponse answer = new AnswerResponse();
+            answer.answerId = a.getId();
+            answer.questionId = a.getQuestionEntity().getId();
+            answer.answer = a.getAnswer();
+            answer.score = a.isAccepted();
+
+            return answer;
+        }).collect(Collectors.toList());
+
+        return response;
     }
 
     @Autowired

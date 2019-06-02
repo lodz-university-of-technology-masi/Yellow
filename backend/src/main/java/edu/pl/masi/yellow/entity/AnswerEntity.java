@@ -8,6 +8,8 @@ public class AnswerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private boolean accepted;
+
     @ManyToOne
     QuestionEntity questionEntity;
 
@@ -19,6 +21,7 @@ public class AnswerEntity {
     public AnswerEntity(QuestionEntity questionEntity, String answer) {
         this.questionEntity = questionEntity;
         this.answer = answer;
+        this.accepted = false;
     }
 
     public int getId() {
@@ -43,5 +46,13 @@ public class AnswerEntity {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
     }
 }

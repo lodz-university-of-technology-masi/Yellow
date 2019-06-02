@@ -1,10 +1,13 @@
-package edu.pl.masi.yellow.model.request;
+package edu.pl.masi.yellow.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public class TestSolutionRequest {
+public class TestSolutionResponse {
+    @JsonProperty("solutionId")
+    public int id;
+
     @JsonProperty("testId")
     public int testId;
 
@@ -15,5 +18,5 @@ public class TestSolutionRequest {
     public String language;
 
     @JsonProperty("answers")
-    public List<AnswerRequest> answerList;
+    public List<AnswerResponse> answerList;
 }
