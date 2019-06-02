@@ -1,8 +1,5 @@
 package edu.pl.masi.yellow.entity;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.*;
 
 @Entity
@@ -16,6 +13,7 @@ public class TestEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private UserEntity owner;
+
 
     public TestEntity(String testname, UserEntity owner) {
         this.testname = testname;

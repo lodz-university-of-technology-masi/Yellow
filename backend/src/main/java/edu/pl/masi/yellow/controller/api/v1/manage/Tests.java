@@ -23,11 +23,7 @@ public class Tests {
     @RequestMapping(value = "/api/v1/manage/tests", method = RequestMethod.GET)
     public List<TestDefResponse> getAllTests(@RequestHeader(name = "Auth-Token",
             required = false) LoginToken authToken) {
-        if (authToken != null && userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR)) {
-            return testManager.getAllTests();
-        } else {
-            throw new ForbiddenException();
-        }
+        return testManager.getAllTests();
     }
 
     @RequestMapping(value = "/api/v1/manage/tests/redactor/{id}",
@@ -68,7 +64,7 @@ public class Tests {
 
     @RequestMapping(value = "/api/v1/manage/tests/rename", method = RequestMethod.POST)
     public GenericResponse renameTest(@RequestHeader(name = "Auth-Token", required = false) LoginToken authToken,
-                                      TestRenameRequest rename) {
+                                      @RequestBody TestRenameRequest rename) {
         if (authToken != null && (userManager.userCanAccess(authToken, UserEntity.UserRole.REDACTOR)
                 || userManager.userCanAccess(authToken, UserEntity.UserRole.MODERATOR))) {
             return this.testManager.renameTest(authToken.getUserName(), rename);
