@@ -1,5 +1,6 @@
 package edu.pl.masi.yellow.manager;
 
+import edu.pl.masi.yellow.ConfigVariables;
 import edu.pl.masi.yellow.entity.QuestionEntity;
 import edu.pl.masi.yellow.entity.TestEntity;
 import edu.pl.masi.yellow.model.request.TranslationRequest;
@@ -36,8 +37,7 @@ public class TranslationsManager {
     private TestRepository testRepository;
     private QuestionRepository questionRepository;
 
-
-    private String key = "";
+    private String key = ConfigVariables.translationKey;
 
     public GenericResponse translateTest(String name, TranslationRequest request) {
         TestEntity testEntity = testRepository.findById(request.testId);
