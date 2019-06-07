@@ -3,6 +3,7 @@
 @using Infrastructure
 @using Blazored
 @using Blazored.Toast.Services
+@using MasiYellow.Util
 @using Microsoft.AspNetCore.Components
 
 @inject IToastService ToastService
@@ -46,7 +47,7 @@
         if (await ApiCommunicator.UpdateUser(_user))
         {
             ToastService.ShowSuccess("Success.");
-            UriHelper.NavigateTo("/userManagement");
+            UriHelper.Navigate("/userManagement");
         }
         else
         {
