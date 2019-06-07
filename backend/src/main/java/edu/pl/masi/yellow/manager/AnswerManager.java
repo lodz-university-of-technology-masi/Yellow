@@ -76,6 +76,7 @@ public class AnswerManager {
         response.positionId = entity.getPositionEntity().getId();
         response.testId = entity.getTestEntity().getId();
         response.language = entity.getLanguage();
+        response.userId = entity.getUserEntity().getId();
 
         response.answerList = entity.getListOfAnswers().stream().map(a -> {
             AnswerResponse answer = new AnswerResponse();
