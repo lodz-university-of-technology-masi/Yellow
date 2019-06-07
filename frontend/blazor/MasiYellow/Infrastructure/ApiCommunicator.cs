@@ -464,5 +464,54 @@ namespace MasiYellow.Infrastructure
                 return new byte[]{};
             }
         }
+
+        public async Task<List<TestSolution>> GetSolutions()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{BaseAddress}/meanswer");
+                response.EnsureSuccessStatusCode();
+
+                return Json.Deserialize<List<TestSolution>>(await response.Content.ReadAsStringAsync());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new List<TestSolution>();
+            }
+        }
+
+        public async Task<bool> AcceptAnswer(SolutionAnswer answer)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsync($"{BaseAddress}/meanswer/{answer.AnswerId}", null);
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+
+        public async Task<bool> RefuseAnswer(SolutionAnswer answer)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"{BaseAddress}/meanswer/{answer.AnswerId}");
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
     }
 }
