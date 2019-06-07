@@ -15,7 +15,8 @@ namespace MasiYellow.Infrastructure
 {
     public class ApiCommunicator
     {
-        private const string BaseAddress = "http://localhost:8080/api/v1/manage";
+        private const string Base = "http://localhost:8080/api/v1";
+        private const string BaseAddress = Base + "/manage";
 
         private readonly AuthorizationManager _authorizationManager;
         private readonly ILogger<ApiCommunicator> _logger;
@@ -408,6 +409,59 @@ namespace MasiYellow.Infrastructure
             {
                 _logger.LogError(e);
                 return false;
+            }
+        }
+
+        public async Task<object> ImportTest(byte[] content)
+        {
+            try
+            {
+
+                var multipart = new MultipartFormDataContent("Imported Test")
+                {
+                    {new ByteArrayContent(content), "file", "Imported Test"}
+                };
+                var response = await _httpClient.PostAsync($"{Base}/tests/io/upload", multipart);
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+        public async Task<byte[]> ExportTestAsCsv(Test test)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{Base}/tests/io/csv/{test.TestId}");
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadAsByteArrayAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new byte[]{};
+            }
+        }
+
+        public async Task<byte[]> ExportTestAsPdf(Test test)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{Base}/tests/io/pdf/{test.TestId}");
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadAsByteArrayAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new byte[]{};
             }
         }
     }
