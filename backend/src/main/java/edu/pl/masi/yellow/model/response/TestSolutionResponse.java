@@ -14,6 +14,9 @@ public class TestSolutionResponse {
     @JsonProperty("positionId")
     public int positionId;
 
+    @JsonProperty("userId")
+    public int userId;
+
     @JsonProperty("language")
     public String language;
 
