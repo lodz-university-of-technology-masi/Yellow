@@ -181,7 +181,7 @@ Answer to test
 }
 ```
 
-##### GET /api/v1/manage/answer/meanswer
+##### GET /api/v1/manage/meanswer
 Get all test answer as redactor
 
 ```json
@@ -204,10 +204,10 @@ Get all test answer as redactor
 ]
 ```
 
-##### PUT /api/va/manage/answer/meanswer/{id}
+##### PUT /api/va/manage/meanswer/{id}
 Accept answer with given id
 
-##### DELETE /api/v1/manage/answer/meanswer/{id}
+##### DELETE /api/v1/manage/meanswer/{id}
 Refuse answer with given id
 
 
