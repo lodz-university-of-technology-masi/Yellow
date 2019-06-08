@@ -28,6 +28,7 @@ else
             <th>Test Name</th>
             <th>Edit</th>
             <th>Export</th>
+            <th>Translate</th>
             <th>Delete</th>
         </tr>
         </thead>
@@ -42,6 +43,10 @@ else
                 <td>
                     <Button onclick="@(() => ExportAsCsv(test))">Csv</Button>
                     <Button onclick="@(() => ExportAsPdf(test))">PDF</Button>
+                </td>        
+                <td>
+                    <Button onclick="@(() => Translate(test, "PL", "EN"))">PL -> EN</Button>
+                    <Button onclick="@(() => Translate(test, "EN", "PL"))">EN -> PL</Button>
                 </td>             
                 <td>
                     <Button onclick="@(() => OnTestRemove(test))">Delete</Button>
@@ -109,6 +114,11 @@ else
     {
         var data = await ApiCommunicator.ExportTestAsPdf(test);
         await SaveAs($"{test.TestName}.pdf", data);
+    }
+
+    private async void Translate(Test test, string from, string to)
+    {
+        await ApiCommunicator.TranslateTest(test, from, to);
     }
 
 }
