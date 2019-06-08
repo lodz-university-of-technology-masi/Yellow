@@ -35,36 +35,45 @@
         else
         {
             @if (AuthManager.CurrentUserRole == UserRole.Moderator)
-             {
-                 <li class="nav-item px-3">
-                     <NavLink class="nav-link" href="userManagement">
-                         <span class="oi oi-person" aria-hidden="true"></span> User Management
-                     </NavLink>
-                 </li>
-                 <li class="nav-item px-3">
-                     <NavLink class="nav-link" href="postionManagement">
-                         <span class="oi oi-tablet" aria-hidden="true"></span> Position Management
-                     </NavLink>
-                 </li>
-             }
+            {
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="userManagement">
+                        <span class="oi oi-person" aria-hidden="true"></span> User Management
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="postionManagement">
+                        <span class="oi oi-tablet" aria-hidden="true"></span> Position Management
+                    </NavLink>
+                </li>
+            }
 
             @if (AuthManager.CurrentUserRole >= UserRole.Redactor)
-             {
-                 <li class="nav-item px-3">
-                     <NavLink class="nav-link" href="testsManagement">
-                         <span class="oi oi-question-mark" aria-hidden="true"></span> Tests Management
-                     </NavLink>
-                 </li>
-             }
+            {
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="testsManagement">
+                        <span class="oi oi-question-mark" aria-hidden="true"></span> Tests Management
+                    </NavLink>
+                </li>
+            }
+
+            @if (AuthManager.CurrentUserRole == UserRole.Redactor)
+            {
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="solutionManagement">
+                        <span class="oi oi-check" aria-hidden="true"></span> Solutions Management
+                    </NavLink>
+                </li>
+            }
 
             @if (AuthManager.CurrentUserRole == UserRole.User)
-             {
-                 <li class="nav-item px-3">
-                     <NavLink class="nav-link" href="choosePosition">
-                         <span class="oi oi-pencil" aria-hidden="true"></span> Solve Test
-                     </NavLink>
-                 </li>
-             }
+            {
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="choosePosition">
+                        <span class="oi oi-pencil" aria-hidden="true"></span> Solve Test
+                    </NavLink>
+                </li>
+            }
 
             <li class="nav-item px-3">
                 <a class="nav-link" href="" onclick="@LogOut">
