@@ -497,12 +497,32 @@ namespace MasiYellow.Infrastructure
             }
         }
 
-
         public async Task<bool> RefuseAnswer(SolutionAnswer answer)
         {
             try
             {
                 var response = await _httpClient.DeleteAsync($"{BaseAddress}/meanswer/{answer.AnswerId}");
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+        public async Task<bool> TranslateTest(Test test, string from, string to)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync($"{Base}/translate/test", new JsonContent(new
+                {
+                    testId = test.TestId,
+                    from = from,
+                    to = to,
+                }));
                 response.EnsureSuccessStatusCode();
 
                 return true;
