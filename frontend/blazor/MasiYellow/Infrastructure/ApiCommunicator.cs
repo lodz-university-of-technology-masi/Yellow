@@ -15,7 +15,7 @@ namespace MasiYellow.Infrastructure
 {
     public class ApiCommunicator
     {
-        private const string Base = "http://localhost:8080/api/v1";
+        private const string Base = "http://212.191.92.88:6061/api/v1";
         private const string BaseAddress = Base + "/manage";
 
         private readonly AuthorizationManager _authorizationManager;

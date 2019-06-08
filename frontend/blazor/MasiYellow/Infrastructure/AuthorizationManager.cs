@@ -13,7 +13,7 @@ namespace MasiYellow.Infrastructure
 {
     public class AuthorizationManager
     {
-        private const string BaseAddress = "http://localhost:8080/api/v1";
+        private const string BaseAddress = "http://212.191.92.88:6061/api/v1";
 
         public event EventHandler<bool> AuthChanged;
 
