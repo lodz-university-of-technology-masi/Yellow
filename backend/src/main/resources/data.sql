@@ -10,13 +10,13 @@ INSERT INTO user_data (user_pass, user_role, user_name) VALUES
     ('password', 'MODERATOR', 'testUser9');
 
 
-INSERT INTO test_data (id, test_name, owner_id) VALUES
-    (1, 'Simple test #1', 4),
-    (2, 'Simple test #2', 4),
-    (3, 'Simple test #3', 5),
-    (4, 'Simple test #4', 6),
-    (5, 'Simple test #5', 7),
-    (6, 'Simple test #6', 7);
+INSERT INTO test_data (test_name, owner_id) VALUES
+    ('Simple test #1', 4),
+    ('Simple test #2', 4),
+    ('Simple test #3', 5),
+    ('Simple test #4', 6),
+    ('Simple test #5', 7),
+    ('Simple test #6', 7);
 
 INSERT INTO question_data (question_desc, question_language,
     question_meta, question_number, question_type, test_id) VALUES
