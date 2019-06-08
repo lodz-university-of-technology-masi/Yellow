@@ -15,7 +15,7 @@ namespace MasiYellow.Infrastructure
 {
     public class ApiCommunicator
     {
-        private const string Base = "http://localhost:8080/api/v1";
+        private const string Base = "http://212.191.92.88:6061/api/v1";
         private const string BaseAddress = Base + "/manage";
 
         private readonly AuthorizationManager _authorizationManager;
@@ -462,6 +462,55 @@ namespace MasiYellow.Infrastructure
             {
                 _logger.LogError(e);
                 return new byte[]{};
+            }
+        }
+
+        public async Task<List<TestSolution>> GetSolutions()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{BaseAddress}/meanswer");
+                response.EnsureSuccessStatusCode();
+
+                return Json.Deserialize<List<TestSolution>>(await response.Content.ReadAsStringAsync());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new List<TestSolution>();
+            }
+        }
+
+        public async Task<bool> AcceptAnswer(SolutionAnswer answer)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsync($"{BaseAddress}/meanswer/{answer.AnswerId}", null);
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+
+        public async Task<bool> RefuseAnswer(SolutionAnswer answer)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"{BaseAddress}/meanswer/{answer.AnswerId}");
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
             }
         }
     }

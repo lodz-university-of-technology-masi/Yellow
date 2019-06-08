@@ -1,0 +1,59 @@
+﻿@page "/solutionManagement"
+@using Models
+@using Infrastructure
+@using Blazored
+@using Blazored.Toast.Services
+@using MasiYellow.Util
+@using Microsoft.AspNetCore.Components
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+
+<h1>Manage Solutions</h1>
+
+@if (_solutions == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Language</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var solution in _solutions)
+            {
+                <tr>
+                    <td>@solution.SolutionId</td>
+                    <td>@solution.Language</td>
+                    <td>
+                        <Button onclick="@(() => OnScoreSolution(solution))">Score</Button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@functions {
+
+    private List<TestSolution> _solutions;
+
+    protected override async Task OnInitAsync()
+    {
+        _solutions = await ApiCommunicator.GetSolutions();
+    }
+
+    public void OnScoreSolution(TestSolution solution)
+    {
+        UriHelper.Navigate($"/scoreTest/solution/{solution.SolutionId}");
+    }
+
+}
