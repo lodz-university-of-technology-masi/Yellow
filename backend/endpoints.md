@@ -181,6 +181,47 @@ Answer to test
 }
 ```
 
+##### GET /api/v1/manage/meanswer
+Get all test answer as redactor
+
+```json
+[
+  {
+    "solutionId": 0,
+    "testId": 0,
+    "positionId": 0,
+    "userId": 0,
+    "language": "PL",
+    "answers": [
+      {
+        "answerId": 0,
+        "questionId": 0,
+        "answer": "answer text",
+        "score": false
+      }
+    ]
+  }
+]
+```
+
+##### PUT /api/va/manage/meanswer/{id}
+Accept answer with given id
+
+##### DELETE /api/v1/manage/meanswer/{id}
+Refuse answer with given id
+
+
+##### POST /api/v1/translate/test
+Translate test:
+
+```json
+{
+  "testId": 0,
+  "from": "PL",
+  "to": "EN"
+}
+```
+
 #### GET /api/v1/tests/io/csv/{testId}
 Get test as csv file
 

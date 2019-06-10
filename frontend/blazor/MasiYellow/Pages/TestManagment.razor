@@ -1,8 +1,8 @@
 ﻿@page "/testsManagement"
-@using Models
-@using Infrastructure
-@using Blazored
+@using System.Net
 @using Blazored.Toast.Services
+@using MasiYellow.Infrastructure
+@using MasiYellow.Models
 @using MasiYellow.Util
 @using Microsoft.AspNetCore.Components
 
@@ -10,36 +10,49 @@
 @inject IUriHelper UriHelper
 @inject ApiCommunicator ApiCommunicator
 @inject AuthorizationManager AuthorizationManager
+@inject IJSRuntime JsRuntime
 
-<h1>Manage Users</h1>
+<h1>Manage Tests</h1>
 
 @if (_tests == null)
 {
-    <p><em>Loading...</em></p>
+    <p>
+        <em>Loading...</em>
+    </p>
 }
 else
 {
     <table class="table">
         <thead>
-            <tr>
-                <th>Test Name</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
+        <tr>
+            <th>Test Name</th>
+            <th>Edit</th>
+            <th>Export</th>
+            <th>Translate</th>
+            <th>Delete</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var test in _tests)
-            {
-                <tr>
-                    <td>@test.TestName</td>
-                    <td>
-                        <Button onclick="@(() => OnTestEdit(test))">Edit</Button>
-                    </td>
-                    <td>
-                        <Button onclick="@(() => OnTestRemove(test))">Delete</Button>
-                    </td>
-                </tr>
-            }
+        @foreach (var test in _tests)
+        {
+            <tr>
+                <td>@test.TestName</td>
+                <td>
+                    <Button onclick="@(() => OnTestEdit(test))">Edit</Button>
+                </td>                
+                <td>
+                    <Button onclick="@(() => ExportAsCsv(test))">Csv</Button>
+                    <Button onclick="@(() => ExportAsPdf(test))">PDF</Button>
+                </td>        
+                <td>
+                    <Button onclick="@(() => Translate(test, "PL", "EN"))">PL -> EN</Button>
+                    <Button onclick="@(() => Translate(test, "EN", "PL"))">EN -> PL</Button>
+                </td>             
+                <td>
+                    <Button onclick="@(() => OnTestRemove(test))">Delete</Button>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 }
@@ -47,6 +60,8 @@ else
 @if (AuthorizationManager.CurrentUserRole == UserRole.Redactor)
 {
     <Button onclick="@(() => UriHelper.Navigate("createTest"))">Create New Test</Button>
+                                                                           <p>Import file:</p>
+    <input type="file" onchange="@UploadFile" id="fileUpload"/>
 }
 
 @functions {
@@ -70,4 +85,40 @@ else
             _tests.Remove(test);
         }
     }
+
+    public async Task<string> GetFileData(string fileInputRef)
+    {
+        return (await JsRuntime.InvokeAsync<StringHolder>("getFileData", fileInputRef)).Content;
+    }
+
+    async Task UploadFile()
+    {
+        var data = await GetFileData("fileUpload");
+        var response = await ApiCommunicator.ImportTest(Convert.FromBase64String(data));
+        _tests = await ApiCommunicator.GetAllTests();
+    }
+
+    public Task SaveAs(string filename, byte[] data)
+        => JsRuntime.InvokeAsync<object>(
+            "saveAsFile",
+            filename,
+            Convert.ToBase64String(data));
+
+    private async void ExportAsCsv(Test test)
+    {
+        var data = await ApiCommunicator.ExportTestAsCsv(test);
+        await SaveAs($"{test.TestName}.csv", data);
+    }
+
+    private async void ExportAsPdf(Test test)
+    {
+        var data = await ApiCommunicator.ExportTestAsPdf(test);
+        await SaveAs($"{test.TestName}.pdf", data);
+    }
+
+    private async void Translate(Test test, string from, string to)
+    {
+        await ApiCommunicator.TranslateTest(test, from, to);
+    }
+
 }

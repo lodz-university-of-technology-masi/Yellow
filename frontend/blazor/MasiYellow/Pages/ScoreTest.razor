@@ -1,0 +1,72 @@
+﻿@page "/scoreTest/solution/{Id}"
+@using Blazored.Toast.Services
+@using MasiYellow.Infrastructure
+@using MasiYellow.Models
+@using Microsoft.AspNetCore.Components
+@using Microsoft.Extensions.Logging
+
+@inject IToastService ToastService
+@inject IUriHelper UriHelper
+@inject ApiCommunicator ApiCommunicator
+@inject ILogger<SolveTest> Logger
+
+<h1>Solve Test</h1>
+
+@if (_test == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    @foreach (var answer in _testSolution.Answers)
+     {
+         {
+             var question =
+                 _test.Questions.First(q => q.QuestionId == answer.QuestionId);
+
+             <h4><b>@question.QuestionDesc</b></h4>
+             <br/>
+             <p>Answer:</p>
+             <p><em>@answer.Answer</em></p>
+             <input type="checkbox" bind="@answer.Score"/>
+         }
+     }
+}
+<br/>
+<br/>
+<Button onclick="@Submit">Score Test</Button>
+
+
+@functions {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    private Test _test;
+    private TestSolution _testSolution;
+
+    protected override async Task OnInitAsync()
+    {
+        _test = await ApiCommunicator.GetTest(int.Parse(Id));
+        _testSolution = (await ApiCommunicator.GetSolutions()).First(solution => solution.PositionId == int.Parse(Id));
+    }
+
+    private async void Submit()
+    {
+        foreach (var answer in _testSolution.Answers)
+        {
+            if (answer.Score)
+            {
+                await ApiCommunicator.AcceptAnswer(answer);
+            }
+            else
+            {
+                await ApiCommunicator.RefuseAnswer(answer);
+            }
+        }
+        UriHelper.NavigateTo("");
+    }
+
+}

@@ -3,6 +3,7 @@
 @using Infrastructure
 @using Blazored
 @using Blazored.Toast.Services
+@using MasiYellow.Util
 @using Microsoft.AspNetCore.Components
 
 @inject IToastService ToastService
@@ -56,7 +57,7 @@ else
 
     public void OnUserEdit(User user)
     {
-        UriHelper.NavigateTo($"/editUser/{user.UserId}");
+        UriHelper.Navigate($"/editUser/{user.UserId}");
     }
 
     public async void OnUserRemove(User user)

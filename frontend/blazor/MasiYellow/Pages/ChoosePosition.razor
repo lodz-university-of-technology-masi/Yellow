@@ -44,7 +44,7 @@ else
             <tr>
                 <td>@position.PositionName</td>
                 <td>
-                    <Button onclick="@(() => OnPositionSelect(position))">Edit</Button>
+                    <Button onclick="@(() => OnPositionSelect(position))">Select</Button>
                 </td>
             </tr>
         }
@@ -62,7 +62,7 @@ else
     {
         Language = args == null ? Language : (Language)Enum.Parse(typeof(Language), (string)args.Value);
         Logger.LogInformation("Refreshing.");
-        _positions = (await ApiCommunicator.GetPositionsWithTestsInLanguage(Language)).Where(position => position.IsActive).ToList();
+        _positions = (await ApiCommunicator.GetPositionsWithTestsInLanguage(Language)).Where(position => position.IsActive || true).ToList();
         StateHasChanged();
     }
 

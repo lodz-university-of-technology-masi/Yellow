@@ -15,7 +15,8 @@ namespace MasiYellow.Infrastructure
 {
     public class ApiCommunicator
     {
-        private const string BaseAddress = "http://localhost:8080/api/v1/manage";
+        private const string Base = "http://212.191.92.88:6061/api/v1";
+        private const string BaseAddress = Base + "/manage";
 
         private readonly AuthorizationManager _authorizationManager;
         private readonly ILogger<ApiCommunicator> _logger;
@@ -400,6 +401,128 @@ namespace MasiYellow.Infrastructure
             try
             {
                 var response = await _httpClient.PutAsync($"{BaseAddress}/positions/{positionId}/deactivate", null);
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+        public async Task<object> ImportTest(byte[] content)
+        {
+            try
+            {
+
+                var multipart = new MultipartFormDataContent("Imported Test")
+                {
+                    {new ByteArrayContent(content), "file", "Imported Test"}
+                };
+                var response = await _httpClient.PostAsync($"{Base}/tests/io/upload", multipart);
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+        public async Task<byte[]> ExportTestAsCsv(Test test)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{Base}/tests/io/csv/{test.TestId}");
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadAsByteArrayAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new byte[]{};
+            }
+        }
+
+        public async Task<byte[]> ExportTestAsPdf(Test test)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{Base}/tests/io/pdf/{test.TestId}");
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadAsByteArrayAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new byte[]{};
+            }
+        }
+
+        public async Task<List<TestSolution>> GetSolutions()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{BaseAddress}/meanswer");
+                response.EnsureSuccessStatusCode();
+
+                return Json.Deserialize<List<TestSolution>>(await response.Content.ReadAsStringAsync());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return new List<TestSolution>();
+            }
+        }
+
+        public async Task<bool> AcceptAnswer(SolutionAnswer answer)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsync($"{BaseAddress}/meanswer/{answer.AnswerId}", null);
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+        public async Task<bool> RefuseAnswer(SolutionAnswer answer)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"{BaseAddress}/meanswer/{answer.AnswerId}");
+                response.EnsureSuccessStatusCode();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                return false;
+            }
+        }
+
+        public async Task<bool> TranslateTest(Test test, string from, string to)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync($"{Base}/translate/test", new JsonContent(new
+                {
+                    testId = test.TestId,
+                    from = from,
+                    to = to,
+                }));
                 response.EnsureSuccessStatusCode();
 
                 return true;
