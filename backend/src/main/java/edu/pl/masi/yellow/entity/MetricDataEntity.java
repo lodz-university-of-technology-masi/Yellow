@@ -23,7 +23,7 @@ public class MetricDataEntity {
     private float distance;
 
     @JsonProperty("clicks")
-    private float clicks;
+    private int clicks;
 
     public MetricDataEntity() {
     }
@@ -60,11 +60,11 @@ public class MetricDataEntity {
         this.distance = distance;
     }
 
-    public float getClicks() {
+    public int getClicks() {
         return clicks;
     }
 
-    public void setClicks(float clicks) {
+    public void setClicks(int clicks) {
         this.clicks = clicks;
     }
 }
