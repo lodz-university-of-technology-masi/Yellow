@@ -61,6 +61,9 @@ public class TestFormatterManager {
         UserEntity user = this.userRepository.findByUsername(userName);
         String fileLines[] = fileContent.split("\n");
 
+        for (int i = 0; i < fileLines.length; ++i)
+            System.out.println(fileLines[i]);
+
         try {
             TestEntity uploadedTest = this.testManager.createNewTest(user, name);
 

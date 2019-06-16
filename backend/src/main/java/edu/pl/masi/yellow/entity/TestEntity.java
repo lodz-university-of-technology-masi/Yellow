@@ -11,7 +11,7 @@ public class TestEntity {
     @Column(name="test_name")
     private String testname;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private UserEntity owner;
 
 
