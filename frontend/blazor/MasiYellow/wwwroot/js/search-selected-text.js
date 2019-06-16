@@ -4,7 +4,7 @@ let urlWikiEN = 'https://en.wikipedia.org/w/index.php?search=';
 let urlSynonimsEN = 'https://www.wordreference.com/synonyms/';
 
 function checkKey(e) {
-  if (e.code == 'KeyW') {
+  if (e.code == 'KeyQ') {
     // console.log(getSelectionText());
     let text = getSelectionText();
     text.replace(/\s/g,'+');
