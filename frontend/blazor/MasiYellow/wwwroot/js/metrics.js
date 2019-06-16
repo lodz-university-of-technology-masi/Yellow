@@ -17,7 +17,10 @@ let endTime = 0;
 let time = 0;
 
 function calculateLength(x, y) {
-  length += Math.sqrt((x - lastX) * (x - lastX) + (y - lastY) * (y - lastY));
+  let scrolly = document.body.scrollTop;
+  let scrollx = document.body.scrollLeft;
+  length += Math.sqrt((x - lastX - scrollx) * (x - lastX - scrollx) 
+                        + (y - lastY - scrolly) * (y - lastY - scrolly));
   lastX = x;
   lastY = y;
   return length;
