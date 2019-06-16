@@ -2,6 +2,7 @@ package edu.pl.masi.yellow.utils;
 
 import edu.pl.masi.yellow.entity.QuestionEntity;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 
 public class QuestionHelper {
@@ -45,15 +46,17 @@ public class QuestionHelper {
 
         if (type.equals(QuestionEntity.QuestionType.CHOICE)) {
             int numberOfAnswer = Integer.valueOf(values[4]);
-            if (numberOfAnswer != values.length - 5)
+            if (numberOfAnswer != values.length - 5 && numberOfAnswer != values.length - 6)
                 throw new IOException("Missing delimiter | for possible answer");
 
-            for (int i = 5; i < values.length - 1; ++i)
+            for (int i = 5; i < values.length - 2; ++i)
                 builder.append(values[i]).append("|");
-            builder.append(values[values.length - 1]);
+            builder.append(values[values.length - 2]);
 
         } else if(type.equals(QuestionEntity.QuestionType.SCALE)) {
-            builder.append("0|10");
+            builder.append(Integer.valueOf(values[5]));
+            builder.append("|");
+            builder.append(Integer.valueOf(values[values.length - 2]));
         }
 
         return builder.toString();

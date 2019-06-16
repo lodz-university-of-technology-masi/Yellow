@@ -95,6 +95,9 @@ public class UserManager {
 
     private boolean isValidUser(LoginToken token) {
         UserEntity user = getUserEntity(token);
+        if (user == null)
+            return false;
+
         return user.getPassword().equals(
                 token.getUserPassword());
     }
