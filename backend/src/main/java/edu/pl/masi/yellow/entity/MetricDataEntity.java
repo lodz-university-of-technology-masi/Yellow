@@ -13,8 +13,8 @@ public class MetricDataEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @JsonProperty("userId")
-    private int userId;
+    @JsonProperty("userName")
+    private String userName;
 
     @JsonProperty("time")
     private int time;
@@ -36,12 +36,12 @@ public class MetricDataEntity {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public int getTime() {
